@@ -141,7 +141,7 @@ public class GUI extends JPanel
         jt.setVisible(true);
         jt.setEnabled(false);
         
-        add(jt);
+        //add(jt);
         
         
 
@@ -160,7 +160,10 @@ public class GUI extends JPanel
 
     public void createGraph(goldAnalyst gpmem) 
     {
-        GPMPMGraph =  new SwingLineGraph(gpmem.getGPMPerMin());
+        //GPMPMGraph =  new SwingLineGraph(gpmem.getCPMPerMin(),1);
+        //GPMPMGraph =  new SwingLineGraph(gpmem.getGPMPerMin(),100);
+        int asdf[] = {0,1,2,3,4,5,6,7,8,9,10,0,1,2,3,4,5,6,7,8,9,10,0,1,2,3,4,5,6,7,8,9,10,0,1,2,3,4,5,6,7,8,9,10,0,1,2,3,4,5,6,7,8,9,10,};
+        GPMPMGraph = new SwingLineGraph(asdf,1);
         GPMPMGraph.setLocation(0,100);
         GPMPMGraph.setSize(640,360);
         add(GPMPMGraph);

@@ -11,44 +11,68 @@ import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import javax.swing.*;
 
 @SuppressWarnings("serial")
 public class SwingLineGraph extends JPanel 
 {
    private int MAX_SCORE = 2000;
-   private int PREF_W = 640;
-   private int PREF_H = 400;
    private int BORDER_GAP = 30;
    private Color GRAPH_COLOR = Color.decode(Integer.toString(0xB8B800));
    private Color GRAPH_POINT_COLOR = new Color(150, 50, 50, 180);
    private Stroke GRAPH_STROKE = new BasicStroke(3f);
    private int GRAPH_POINT_WIDTH = 6;
-   private static int Y_HATCH_CNT = 20;
+   private int Y_HATCH_CNT = 20;
    private int[] scores;
-   private int maxVal;
    private int maxX = 36;
+   private double[] doubleScores;
+   private boolean doubleFlag;
+   private int yScaleNum;
 
-   public SwingLineGraph(int[] _scores) 
+   public SwingLineGraph(int[] _scores, int byNum) 
    {
       scores = _scores;
+      yScaleNum = byNum;
       
       if (scores.length < maxX)
           maxX = scores.length;
       
+      int maxVal = 0;
       for(int i = 0; i<maxX; i++)
       {
           if (scores[i] > maxVal)
               maxVal = scores[i];
       }
       
-      MAX_SCORE = ((int)(maxVal * 1.2))/100 * 100;
-      Y_HATCH_CNT = MAX_SCORE / 100;
+      MAX_SCORE = ((int)(maxVal * 1.2))/yScaleNum * yScaleNum;
+      Y_HATCH_CNT = MAX_SCORE / yScaleNum;
       
-      
+      doubleFlag = false;
    }
 
+   public SwingLineGraph(double[] _scores, int byNum) 
+   {
+      doubleScores = _scores;
+      yScaleNum = byNum;
+
+      
+      if (doubleScores.length < maxX)
+          maxX = doubleScores.length;
+      
+      double maxVal = 0;
+      for(int i = 0; i<maxX; i++)
+      {
+          if (doubleScores[i] > maxVal)
+              maxVal = doubleScores[i];
+      }
+      
+      MAX_SCORE = ((int)(maxVal * 1.2))/yScaleNum * yScaleNum;
+      Y_HATCH_CNT = MAX_SCORE / yScaleNum;
+      
+      doubleFlag = true;
+   }
+   
+   
     @Override
     protected void paintComponent(Graphics g) 
     {
@@ -59,14 +83,18 @@ public class SwingLineGraph extends JPanel
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         double xScale = ((double) getWidth() - 2 * BORDER_GAP) / (maxX - 1);
-        double yScale = ((double) getHeight() - 2 * BORDER_GAP) / (MAX_SCORE - 1);
+        double yScale = ((double) getHeight() - 2 * BORDER_GAP) / (MAX_SCORE);
 
         List<Point> graphPoints = new ArrayList<Point>();
 
         for (int i = 0; i < maxX; i++) 
         {
             int x1 = (int) (i * xScale + BORDER_GAP);
-            int y1 = (int) ((MAX_SCORE - scores[i]) * yScale + BORDER_GAP);
+            int y1;
+            if(!doubleFlag)
+                y1 = (int) ((MAX_SCORE - (scores[i])) * yScale + BORDER_GAP);
+            else
+                y1 = (int) ((MAX_SCORE - (doubleScores[i])) * yScale + BORDER_GAP);
             graphPoints.add(new Point(x1, y1));
         }
 
@@ -83,13 +111,13 @@ public class SwingLineGraph extends JPanel
             int y1 = y0;
             g2.drawLine(x0, y0, x1, y1);
 
-            g2.drawString(Integer.toString((i+1)*100), 7, y0+6);
+            g2.drawString(Integer.toString((i+1)*yScaleNum), 7, y0+6);
         }
 
         // and for x axis
         for (int i = 0; i < maxX - 1; i++) 
         {
-            int x0 = (i + 1) * (getWidth() - BORDER_GAP * 2) / (maxX - 1) + BORDER_GAP;
+            int x0 = (int) ((i+1) * xScale + BORDER_GAP);
             int x1 = x0;
             int y0 = getHeight() - BORDER_GAP;
             int y1;
@@ -135,11 +163,9 @@ public class SwingLineGraph extends JPanel
        
     }
 
-   @Override
-   public Dimension getPreferredSize() {
-      return new Dimension(PREF_W, PREF_H);
-   }
-
+  
+   
+  /*
    private static void createAndShowGui() 
    {
       int[] scores = new int[16];
@@ -157,6 +183,7 @@ public class SwingLineGraph extends JPanel
       frame.pack();
       frame.setVisible(true);
    }
+   
    
       public static void createAndShowGui(SwingLineGraph sli) {
 
@@ -181,5 +208,6 @@ public class SwingLineGraph extends JPanel
        double yScale = ((double) getHeight() - 2 * BORDER_GAP) / (MAX_SCORE - 1);
        return (int)((BORDER_GAP - y)/yScale + MAX_SCORE);
    }
+   */
    
 }

@@ -13,8 +13,14 @@ import javax.swing.JPanel;
 public class graphsChartsPanel 
 {
     private JPanel OptionsPane;
-    private JPanel GPMGraph;
-    private JPanel CPMGraph;
+    private SwingLineGraph GPMGraph;
+    private SwingLineGraph CPMGraph;
     private JPanel GPMChart;
     private JPanel CPMChart;
+    
+    public graphsChartsPanel(goldAnalyst data)
+    {
+        GPMGraph = new SwingLineGraph(data.getGPMPerMin(), 100);
+        CPMGraph = new SwingLineGraph(data.getCPMPerMin(),  1);
+    }
 }
