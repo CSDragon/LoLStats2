@@ -120,11 +120,7 @@ public class swingUI
     }
     
     
-    public static void paneChanged(int changedTo)
-    {
-        guiPanel.paneChanged(changedTo);
-    }
-    
+
 }
 
 

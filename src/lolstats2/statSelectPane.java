@@ -30,6 +30,7 @@ public class statSelectPane  extends JPanel
     private BufferedImage selectBar;
     private BufferedImage selected;
     private int selectedLoc = -3;
+    private graphsChartsPanel target = null;
     
     public statSelectPane()
     {
@@ -48,32 +49,32 @@ public class statSelectPane  extends JPanel
                 if(x < 104)
                 {
                     selectedLoc = -3;
-                    swingUI.paneChanged(0);
+                    target.paneChanged(0);
                 }
                 else if(x > 108 && x < 211)
                 {
                     selectedLoc = 102;
-                    swingUI.paneChanged(1);
+                    target.paneChanged(1);
                 }
                 else if(x > 215 && x < 318)
                 {
                     selectedLoc = 208;
-                    swingUI.paneChanged(2);
+                    target.paneChanged(2);
                 }
                 else if(x > 322 && x < 424)
                 {
                     selectedLoc = 314;
-                    swingUI.paneChanged(3);
+                    target.paneChanged(3);
                 }
                 else if(x > 428 && x < 531)
                 {
                     selectedLoc = 421;
-                    swingUI.paneChanged(4);
+                    target.paneChanged(4);
                 }
                /* else if(x > 535 && x < 638)
                 {
                     selectedLoc = 527;
-                    swingUI.paneChanged(5);
+                    target.paneChanged(5);
                 }*/
                 repaint(); 
             }
@@ -87,6 +88,11 @@ public class statSelectPane  extends JPanel
         
         setSize(640,39);
         
+    }
+    
+    public void setTarget(graphsChartsPanel _target)
+    {
+        target = _target;
     }
     
     

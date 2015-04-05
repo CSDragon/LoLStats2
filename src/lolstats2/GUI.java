@@ -20,7 +20,7 @@ public class GUI extends JPanel
 {
 	private BufferedImage topBar;
     private BufferedImage bottomBar;
-    private SwingLineGraph GPMPMGraph;
+    private graphsChartsPanel gcpPane;
     private JTextField nameInputLine;
     private JButton lookupButton;
     private BufferedImage lookupButtonArt;
@@ -160,14 +160,12 @@ public class GUI extends JPanel
 
     public void createGraph(goldAnalyst gpmem) 
     {
-        //GPMPMGraph =  new SwingLineGraph(gpmem.getCPMPerMin(),1);
-        //GPMPMGraph =  new SwingLineGraph(gpmem.getGPMPerMin(),100);
-        int asdf[] = {0,1,2,3,4,5,6,7,8,9,10,0,1,2,3,4,5,6,7,8,9,10,0,1,2,3,4,5,6,7,8,9,10,0,1,2,3,4,5,6,7,8,9,10,0,1,2,3,4,5,6,7,8,9,10,};
-        GPMPMGraph = new SwingLineGraph(asdf,1);
-        GPMPMGraph.setLocation(0,100);
-        GPMPMGraph.setSize(640,360);
-        add(GPMPMGraph);
-        GPMPMGraph.setVisible(true);
+        gcpPane = new graphsChartsPanel(gpmem);
+        ssp.setTarget(gcpPane);
+        gcpPane.setLocation(0,100);
+        gcpPane.setSize(640,360);
+        add(gcpPane);
+        gcpPane.setVisible(true);
     }
     
     
@@ -212,14 +210,6 @@ public class GUI extends JPanel
         artp.setVisible(true);
     }
 
-    public void paneChanged(int ChangedTo)
-    {
-        GPMPMGraph.setVisible(false);
-        
-        if (ChangedTo == 1)
-            GPMPMGraph.setVisible(true);
-    }
-    
 
     
 }
