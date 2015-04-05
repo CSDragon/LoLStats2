@@ -5,16 +5,13 @@
  */
 package lolstats2;
 
-import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.*;
 import java.awt.*;
 import static java.awt.Frame.ICONIFIED;
-import static java.awt.Frame.MAXIMIZED_BOTH;
 import static java.awt.Frame.NORMAL;
 import java.awt.event.*;
-import javax.swing.UIManager;
 
 /**
 *
@@ -121,10 +118,17 @@ public class swingUI
         
         appFrame.repaint();
     }
+    
+    
+    public static void paneChanged(int changedTo)
+    {
+        guiPanel.paneChanged(changedTo);
+    }
+    
 }
 
 
-/* Goes where the null is in the trayIcon
+/* Goes where the null is in the trayIcon if we want a popup menu instead
 
 
 

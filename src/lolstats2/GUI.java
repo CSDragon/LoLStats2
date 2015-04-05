@@ -8,6 +8,9 @@ import javax.swing.*;
 import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.io.File;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.table.*;
 
 /**
  * Handles interactions with the game's Graphical User Interface
@@ -20,10 +23,11 @@ public class GUI extends JPanel
     private SwingLineGraph GPMPMGraph;
     private JTextField nameInputLine;
     private JButton lookupButton;
+    private BufferedImage lookupButtonArt;
     private statSelectPane ssp;
+    private ArtPanel artp;
     
-    
-	public static final int WIDTH = 640, HEIGHT = 480;
+    public static final int WIDTH = 640, HEIGHT = 480;
     
 
 	/**
@@ -50,7 +54,10 @@ public class GUI extends JPanel
                 //If "enter"
                 if(e.getKeyCode() == 10)
                 {
-                    LolStats2.run(nameInputLine.getText());
+                    if(!nameInputLine.getText().equals(""))
+                        LolStats2.run(nameInputLine.getText());
+                    else
+                        hideInner();
                 }
             }
             
@@ -70,9 +77,11 @@ public class GUI extends JPanel
         add(nameInputLine);
         
         
-        lookupButton = new JButton("Find Summoner");
-        lookupButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 9));
+        lookupButton = new JButton();
         lookupButton.setSize(100, 20);
+        lookupButton.setOpaque(false);
+        lookupButton.setContentAreaFilled(false);
+        lookupButton.setBorderPainted(false);
         lookupButton.setLocation(440, 30);  
         lookupButton.addMouseListener(new MouseListener()
         {
@@ -83,12 +92,15 @@ public class GUI extends JPanel
 
             public void mouseReleased(MouseEvent e) 
             {
-                LolStats2.run(nameInputLine.getText());
+                
             }
 
             public void mouseClicked(MouseEvent e) 
             {
-                
+                if(!nameInputLine.getText().isEmpty())
+                    LolStats2.run(nameInputLine.getText());
+                else
+                    hideInner();
             }
 
             public void mouseEntered(MouseEvent e) 
@@ -111,11 +123,33 @@ public class GUI extends JPanel
         ssp.setVisible(false);
         add(ssp);
         
+        artp = new ArtPanel();
+        artp.setSize(640,402);
+        artp.setLocation(0, 57);
+        artp.setVisible(true);
+        add(artp);
+        
+        
+        JTable jt = new JTable(16,3);
+        jt.setSize(640,200);
+        jt.setLocation(0, 260);
+        jt.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        jt.getColumnModel().getColumn(0).setPreferredWidth(1);
+        jt.getColumnModel().getColumn(0).setWidth(1);
+        jt.getColumnModel().getColumn(1).setPreferredWidth(10);
+        jt.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        jt.setVisible(true);
+        jt.setEnabled(false);
+        
+        add(jt);
+        
+        
 
         try 
         {
             topBar = ImageIO.read(new File("assets/TopBar.png"));
             bottomBar = ImageIO.read(new File("assets/BottomBar.png"));
+            lookupButtonArt = ImageIO.read(new File("assets/SummonerLookupButton.png"));
         } 
         catch (IOException e)
         {System.out.println("bluh" + e);}
@@ -124,14 +158,14 @@ public class GUI extends JPanel
 	}
 
 
-    public void createGraph(SwingLineGraph sli) 
+    public void createGraph(goldAnalyst gpmem) 
     {
-      GPMPMGraph = sli;
-      GPMPMGraph.setLocation(0,100);
-      GPMPMGraph.setSize(640,360);
-      add(GPMPMGraph);
-      GPMPMGraph.setVisible(true);
-   }
+        GPMPMGraph =  new SwingLineGraph(gpmem.getGPMPerMin());
+        GPMPMGraph.setLocation(0,100);
+        GPMPMGraph.setSize(640,360);
+        add(GPMPMGraph);
+        GPMPMGraph.setVisible(true);
+    }
     
     
     @Override
@@ -141,59 +175,48 @@ public class GUI extends JPanel
         
         //Fill background
 		g2.setColor(Color.decode("#DEE4EA")); 
-		g2.fillRect(0, 0, this.getWidth(), HEIGHT);
+		g2.fillRect(0, 0, 640, 480);
         
        
-
+        //artp.reOrderPaint(g);
         
         g2.drawImage(topBar, 0, 0, null);
         g2.drawImage(bottomBar,0,459,null);
+        g2.drawImage(lookupButtonArt, 440, 29, null);
          
 
         
 		//draw Strings
-		g2.setColor(Color.decode("#000000"));
-        g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+		g2.setColor(Color.decode("#FFFFFF"));
+        g2.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 		g2.drawString("Status", 5, 475);
 		g2.drawString("Ver 1.0.0.1", 565, 475);//Figure Out a way to align this later.
-        
-        //draw headder string
-		g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 24));
-        g2.drawString("Look Up A Summoner", 200, 25);//Figure out how to aligh this later
-        
-        
 
 
-        Integer.parseInt("1");
-        
-		//Toolkit.getDefaultToolkit().sync();
     }
     
     
     public void showInner()
     {
-        if(ssp!=null)
-            ssp.setVisible(true);
+        ssp.setVisible(true);
+        artp.setVisible(false);
+        
     }
     
     public void hideInner()
     {
-        if(ssp!=null)
-            ssp.setVisible(false);
+        ssp.setVisible(false);
+        artp.setVisible(true);
     }
-    
-    
-    public static void main(String[] args) 
-    {
-        GUI hGUI = new GUI();
-    
-    	hGUI.setVisible(true);
 
-		//hGUI.drawScene();
+    public void paneChanged(int ChangedTo)
+    {
+        GPMPMGraph.setVisible(false);
+        
+        if (ChangedTo == 1)
+            GPMPMGraph.setVisible(true);
     }
     
-    
-   
 
     
 }

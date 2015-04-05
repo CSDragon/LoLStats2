@@ -57,7 +57,7 @@ public class LolStats2
         long playerID = 0;
         
         //this has been commented out for offline testing
-     /*   try
+        /*try
         {
             playerID = api.getSummonerByName(Region.NA, playerName).get(playerName.toLowerCase()).getId();
         }
@@ -82,9 +82,9 @@ public class LolStats2
         gpmem.print();
         gpmem.printCreepsByMin();
         
-        SwingLineGraph slg = new SwingLineGraph(gpmem.getGPMPerMin());
         
-        swingUI.getGui().createGraph(slg);
+        
+        swingUI.getGui().createGraph(gpmem);
         swingUI.getGui().showInner();
         swingUI.getGui().repaint();
         //SwingLineGraph.createAndShowGui(slg);

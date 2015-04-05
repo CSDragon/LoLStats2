@@ -30,7 +30,6 @@ public class statSelectPane  extends JPanel
     private BufferedImage selectBar;
     private BufferedImage selected;
     private int selectedLoc = -3;
-    private int selectedFrame = 0;
     
     public statSelectPane()
     {
@@ -49,32 +48,32 @@ public class statSelectPane  extends JPanel
                 if(x < 104)
                 {
                     selectedLoc = -3;
-                    selectedFrame = 0;
+                    swingUI.paneChanged(0);
                 }
                 else if(x > 108 && x < 211)
                 {
                     selectedLoc = 102;
-                    selectedFrame = 1;
+                    swingUI.paneChanged(1);
                 }
                 else if(x > 215 && x < 318)
                 {
                     selectedLoc = 208;
-                    selectedFrame = 2;
+                    swingUI.paneChanged(2);
                 }
                 else if(x > 322 && x < 424)
                 {
                     selectedLoc = 314;
-                    selectedFrame = 3;
+                    swingUI.paneChanged(3);
                 }
                 else if(x > 428 && x < 531)
                 {
                     selectedLoc = 421;
-                    selectedFrame = 4;
+                    swingUI.paneChanged(4);
                 }
                /* else if(x > 535 && x < 638)
                 {
                     selectedLoc = 527;
-                    selectedFrame = 5;
+                    swingUI.paneChanged(5);
                 }*/
                 repaint(); 
             }
@@ -88,12 +87,6 @@ public class statSelectPane  extends JPanel
         
         setSize(640,39);
         
-    }
-    
-    
-    public int getCurPanel()
-    {
-        return selectedFrame;
     }
     
     
