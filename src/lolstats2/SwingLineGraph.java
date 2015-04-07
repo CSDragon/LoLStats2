@@ -79,7 +79,7 @@ public class SwingLineGraph extends JPanel
         Graphics2D g2 = (Graphics2D)g;
         
         g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-        
+        g2.setColor(Color.decode("0xCFCFCF"));
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         double xScale = ((double) getWidth() - 2 * BORDER_GAP) / (maxX - 1);

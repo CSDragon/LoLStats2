@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.text.DecimalFormat;
 
-public class goldAnalyst 
+public class GoldAnalyst 
 {
     private int[] countPerMin;
     private int[] totalGoldPerMin;
@@ -21,7 +21,7 @@ public class goldAnalyst
     private int nonSupGames;
     private int maxTime;
     
-    public goldAnalyst(ArrayList<matchdata> data)
+    public GoldAnalyst(ArrayList<Matchdata> data)
     {
         
         totalGames = data.size();

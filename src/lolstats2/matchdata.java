@@ -9,7 +9,7 @@ import java.io.*;
 
 
 
-public class matchdata 
+public class Matchdata 
 {
     private String playerName;
     private long playerID;
@@ -26,12 +26,12 @@ public class matchdata
 
     
     
-    public matchdata()
+    public Matchdata()
     {
     }
     
     
-    public matchdata(long _matchID, String _playerName, long _playerID)
+    public Matchdata(long _matchID, String _playerName, long _playerID)
     {
         this.matchID = _matchID;
         this.playerName = _playerName;
@@ -79,7 +79,7 @@ public class matchdata
         victory = match.getParticipants().get(participantID-1).getStats().isWinner();
     }
 
-    public static void saveMD(matchdata out)
+    public static void saveMD(Matchdata out)
     {
         Gson outGS = new Gson();
         String outStream = outGS.toJson(out);
@@ -101,7 +101,7 @@ public class matchdata
         
     }
     
-    public static matchdata loadMD(long matchID, String UserName)
+    public static Matchdata loadMD(long matchID, String UserName)
     {
         FileReader fis;
         StringBuilder sb = new StringBuilder();
@@ -125,13 +125,13 @@ public class matchdata
         
         catch(Exception e)
         {
-            return new matchdata();
+            return new Matchdata();
         }
 
 
         String json = sb.toString();
         Gson gson = new Gson();
-        matchdata in = gson.fromJson(json, matchdata.class);
+        Matchdata in = gson.fromJson(json, Matchdata.class);
         
         
         return in;

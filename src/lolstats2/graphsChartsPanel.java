@@ -12,7 +12,7 @@ import javax.swing.JPanel;
  *
  * @author Chris
  */
-public class graphsChartsPanel extends JPanel
+public class GraphsChartsPanel extends JPanel
 {
     private JPanel optionsPane;
     private SwingLineGraph GPMGraph;
@@ -20,7 +20,7 @@ public class graphsChartsPanel extends JPanel
     private JPanel GPMChart;
     private JPanel CPMChart;
     
-    public graphsChartsPanel(goldAnalyst data)
+    public GraphsChartsPanel(GoldAnalyst data)
     {
         setLayout(null);
         GPMGraph = new SwingLineGraph(data.getGPMPerMin(), 100);
@@ -43,8 +43,11 @@ public class graphsChartsPanel extends JPanel
         //add(GPMChart);
         //add(CPMChart);
         
-        GPMGraph.setVisible(false);
+        //optionsPane.setVisible(false);
+        GPMGraph.setVisible(true);
         CPMGraph.setVisible(false);
+        //GPMChart.setVisible(false);
+        //CPMChart.setVisible(false);
         
         setOpaque(false);
         

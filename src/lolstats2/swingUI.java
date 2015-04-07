@@ -17,7 +17,7 @@ import java.awt.event.*;
 *
  * @author Chris
  */
-public class swingUI
+public class SwingUI
 {
     private static JFrame appFrame;
     private static GUI guiPanel;
@@ -29,7 +29,7 @@ public class swingUI
     private SystemTray tray;
     
     
-    public swingUI()
+    public SwingUI()
     {
         appFrame = new JFrame("LoL Gold Data");
       
@@ -44,8 +44,8 @@ public class swingUI
         guiPanel = new GUI();
         
         appFrame.add(guiPanel);
-        
-		appFrame.pack();
+
+        appFrame.pack();
         //appFrame.setSize(646,508);
         
 

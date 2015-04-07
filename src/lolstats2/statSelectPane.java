@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -25,14 +26,14 @@ import javax.swing.JPanel;
 
     
 
-public class statSelectPane  extends JPanel
+public class StatSelectPane  extends JPanel
 {
     private BufferedImage selectBar;
     private BufferedImage selected;
-    private int selectedLoc = -3;
-    private graphsChartsPanel target = null;
+    private int selectedLoc = 102;
+    private GraphsChartsPanel target = null;
     
-    public statSelectPane()
+    public StatSelectPane()
     {
         try 
         {
@@ -90,9 +91,10 @@ public class statSelectPane  extends JPanel
         
     }
     
-    public void setTarget(graphsChartsPanel _target)
+    public void setTarget(GraphsChartsPanel _target)
     {
         target = _target;
+        selectedLoc = 102;
     }
     
     
@@ -104,8 +106,8 @@ public class statSelectPane  extends JPanel
         
         g2.drawImage(selectBar, 0, 0, null);
         g2.drawImage(selected,selectedLoc,0,null);
-        
-        g2.setColor(Color.decode("#000000"));
+        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+        g2.setColor(Color.decode("#CFCFCF"));
         g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
 		g2.drawString("Options", 30, 22);
         g2.drawString("GPM Graph", 127, 22);

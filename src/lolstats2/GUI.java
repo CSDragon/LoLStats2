@@ -20,11 +20,11 @@ public class GUI extends JPanel
 {
 	private BufferedImage topBar;
     private BufferedImage bottomBar;
-    private graphsChartsPanel gcpPane;
+    private GraphsChartsPanel gcpPane;
     private JTextField nameInputLine;
     private JButton lookupButton;
     private BufferedImage lookupButtonArt;
-    private statSelectPane ssp;
+    private StatSelectPane ssp;
     private ArtPanel artp;
     
     public static final int WIDTH = 640, HEIGHT = 480;
@@ -43,12 +43,8 @@ public class GUI extends JPanel
         nameInputLine.setSize(320, 20);  
         nameInputLine.addKeyListener(new KeyListener()
         {
-            public void actionPerformed(KeyEvent e)
-            {
-                System.out.println(e.getKeyCode());
-            }
-            
-            @Override
+            public void actionPerformed(KeyEvent e) {}
+
             public void keyReleased(KeyEvent e)
             {
                 //If "enter"
@@ -61,17 +57,8 @@ public class GUI extends JPanel
                 }
             }
             
-            @Override
-            public void keyPressed(KeyEvent e)
-            {
-              //doNothing
-            }
-            
-            @Override
-            public void keyTyped(KeyEvent e)
-            {
-                //doNothing
-            }
+            public void keyPressed(KeyEvent e) {}
+            public void keyTyped(KeyEvent e){}
         });
         
         add(nameInputLine);
@@ -85,47 +72,33 @@ public class GUI extends JPanel
         lookupButton.setLocation(440, 30);  
         lookupButton.addMouseListener(new MouseListener()
         {
-            public void mousePressed(MouseEvent e) 
-            {
-                
-            }
-
-            public void mouseReleased(MouseEvent e) 
-            {
-                
-            }
-
+            public void mousePressed(MouseEvent e) {}
+            public void mouseReleased(MouseEvent e) {}
+            
             public void mouseClicked(MouseEvent e) 
             {
-                if(!nameInputLine.getText().isEmpty())
+                if(!nameInputLine.getText().equals(""))
                     LolStats2.run(nameInputLine.getText());
                 else
                     hideInner();
             }
 
-            public void mouseEntered(MouseEvent e) 
-            {
-                
-            }
-
-            public void mouseExited(MouseEvent e) 
-            {
-                
-            }
+            public void mouseEntered(MouseEvent e) {}
+            public void mouseExited(MouseEvent e) {}
         });
         
         add(lookupButton);
         
         
-        ssp = new statSelectPane();
+        ssp = new StatSelectPane();
         ssp.setSize(640,39);
         ssp.setLocation(0, 58);
         ssp.setVisible(false);
         add(ssp);
         
         artp = new ArtPanel();
-        artp.setSize(640,402);
-        artp.setLocation(0, 57);
+        artp.setSize(640,400);
+        artp.setLocation(0, 59);
         artp.setVisible(true);
         add(artp);
         
@@ -158,9 +131,11 @@ public class GUI extends JPanel
 	}
 
 
-    public void createGraph(goldAnalyst gpmem) 
+    public void createGraph(GoldAnalyst gpmem) 
     {
-        gcpPane = new graphsChartsPanel(gpmem);
+        if(gcpPane != null)
+            this.remove(gcpPane);
+        gcpPane = new GraphsChartsPanel(gpmem);
         ssp.setTarget(gcpPane);
         gcpPane.setLocation(0,100);
         gcpPane.setSize(640,360);
@@ -175,7 +150,7 @@ public class GUI extends JPanel
         Graphics2D g2 = (Graphics2D)g;
         
         //Fill background
-		g2.setColor(Color.decode("#DEE4EA")); 
+		g2.setColor(Color.decode("#03151C")); 
 		g2.fillRect(0, 0, 640, 480);
         
        
@@ -200,6 +175,7 @@ public class GUI extends JPanel
     public void showInner()
     {
         ssp.setVisible(true);
+        gcpPane.setVisible(true);
         artp.setVisible(false);
         
     }
@@ -207,6 +183,7 @@ public class GUI extends JPanel
     public void hideInner()
     {
         ssp.setVisible(false);
+        gcpPane.setVisible(false);
         artp.setVisible(true);
     }
 

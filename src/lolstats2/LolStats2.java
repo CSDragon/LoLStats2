@@ -38,7 +38,7 @@ public class LolStats2
         }
         
 
-        swingUI ui = new swingUI();
+        SwingUI ui = new SwingUI();
         
         long playerID = -1;
         String playerName;
@@ -78,15 +78,15 @@ public class LolStats2
         //this has been commented out for offline testing
         //getNewMatches(playerName, playerID);
         
-        goldAnalyst gpmem = new goldAnalyst(loadRecordedMatches(playerName));
+        GoldAnalyst gpmem = new GoldAnalyst(loadRecordedMatches(playerName));
         gpmem.print();
         gpmem.printCreepsByMin();
         
         
         
-        swingUI.getGui().createGraph(gpmem);
-        swingUI.getGui().showInner();
-        swingUI.getGui().repaint();
+        SwingUI.getGui().createGraph(gpmem);
+        SwingUI.getGui().showInner();
+        SwingUI.getGui().repaint();
         //SwingLineGraph.createAndShowGui(slg);
         
   
@@ -123,15 +123,15 @@ public class LolStats2
         return list;
     }
     
-    public static ArrayList<matchdata> loadRecordedMatches(String username)
+    public static ArrayList<Matchdata> loadRecordedMatches(String username)
     {
         ArrayList<Long> matchList = listRecordedMatches(username);
         
-        ArrayList<matchdata> matches = new ArrayList<matchdata>();
+        ArrayList<Matchdata> matches = new ArrayList<Matchdata>();
         
         for (Long curMatch : matchList) 
         {
-            matches.add(matchdata.loadMD(curMatch, username));
+            matches.add(Matchdata.loadMD(curMatch, username));
         }
         
         
@@ -177,8 +177,8 @@ public class LolStats2
         
         for (Long curMatchID : MHMatches) 
         {
-         //   swingUI.updateStatus("Downloading Match "+curMatchID);
-            matchdata.saveMD(new matchdata(curMatchID, username, playerID));
+         //   SwingUI.updateStatus("Downloading Match "+curMatchID);
+            Matchdata.saveMD(new Matchdata(curMatchID, username, playerID));
             try{Thread.sleep(1500);}catch(Exception e){}
             
         }
