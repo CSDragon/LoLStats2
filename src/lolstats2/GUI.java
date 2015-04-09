@@ -138,7 +138,7 @@ public class GUI extends JPanel
         gcpPane = new GraphsChartsPanel(gpmem);
         ssp.setTarget(gcpPane);
         gcpPane.setLocation(0,100);
-        gcpPane.setSize(640,360);
+        gcpPane.setSize(640,359);
         add(gcpPane);
         gcpPane.setVisible(true);
     }

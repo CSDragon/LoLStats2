@@ -24,12 +24,17 @@ public class GraphsChartsPanel extends JPanel
     private ChartPanel GPMChart;
     private ChartPanel CPMChart;
     private BufferedImage bluebkg;
+    private BufferedImage gold;
+    private BufferedImage minion;
+    private int minipic = 1;
     
     public GraphsChartsPanel(GoldAnalyst data)
     {
         try 
         {
             bluebkg = ImageIO.read(new File("assets/bluebkg.png"));
+            gold = ImageIO.read(new File("assets/gold.png"));
+            minion = ImageIO.read(new File("assets/minion.png"));
         } 
         catch (IOException e) {}
         
@@ -70,6 +75,8 @@ public class GraphsChartsPanel extends JPanel
     
     public void paneChanged(int paneNo)
     {
+        minipic = paneNo;
+        
         if(paneNo == 0)
         {
             //optionsPane.setVisible(true);
@@ -118,6 +125,11 @@ public class GraphsChartsPanel extends JPanel
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;
         g2.drawImage(bluebkg, 0, 0, null);
+        
+        if(minipic == 1 || minipic == 3)
+            g2.drawImage(gold, -10, 300, null);
+        else if(minipic == 2 || minipic == 4)
+            g2.drawImage(minion, -25, 280, null);
     }
     
 }

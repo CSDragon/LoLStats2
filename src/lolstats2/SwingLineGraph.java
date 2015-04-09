@@ -20,22 +20,24 @@ import javax.swing.*;
 @SuppressWarnings("serial")
 public class SwingLineGraph extends JPanel 
 {
-    private int MAX_SCORE = 2000;
-    private int BORDER_GAP = 30;
-    private Color GRAPH_COLOR = Color.decode(Integer.toString(0xB8B800));
-    private Color GRAPH_POINT_COLOR = new Color(150, 50, 50, 180);
-    private Color goldTrim = Color.decode("0xdcb64a");
-    private Color whiteText = Color.decode("0xCFCFCF");
-    private Stroke GRAPH_STROKE = new BasicStroke(3f);
-    private int GRAPH_POINT_WIDTH = 6;
-    private int Y_HATCH_CNT = 20;
-    private int[] scores;
+    private int yMax;
+    private int edgeOffset = 30;
+    private int tickSize = 6;
+    private int yTickCount;
     private int maxX = 36;
+
+    private int[] intScores;
     private double[] doubleScores;
     private boolean doubleFlag;
     private int yScaleNum;
     private BufferedImage graphBkg;
-    public SwingLineGraph(int[] _scores, int byNum) 
+    
+    private Color lineColor = Color.decode("0xB8B800");
+    private Color pointColor = Color.decode("0x963232");
+    private Color goldTrim = Color.decode("0xdcb64a");
+    private Color whiteText = Color.decode("0xCFCFCF");
+    
+    public SwingLineGraph(int[] _intScores, int byNum) 
     {
         try 
         {
@@ -43,28 +45,28 @@ public class SwingLineGraph extends JPanel
         } 
         catch (IOException e){}
 
-       scores = _scores;
+       intScores = _intScores;
        yScaleNum = byNum;
 
-       if (scores.length < maxX)
-           maxX = scores.length;
+       if (intScores.length < maxX)
+           maxX = intScores.length;
 
        int maxVal = 0;
        for(int i = 0; i<maxX; i++)
        {
-           if (scores[i] > maxVal)
-               maxVal = scores[i];
+           if (intScores[i] > maxVal)
+               maxVal = intScores[i];
        }
 
-       MAX_SCORE = ((int)(maxVal * 1.2))/yScaleNum * yScaleNum;
-       Y_HATCH_CNT = MAX_SCORE / yScaleNum;
+       yMax = ((int)(maxVal * 1.2))/yScaleNum * yScaleNum;
+       yTickCount = yMax / yScaleNum;
 
        this.setOpaque(false);
 
        doubleFlag = false;
     }
 
-    public SwingLineGraph(double[] _scores, int byNum) 
+    public SwingLineGraph(double[] _doubleScores, int byNum) 
     {
         try 
         {
@@ -72,7 +74,7 @@ public class SwingLineGraph extends JPanel
         } 
         catch (IOException e){}
         
-        doubleScores = _scores;
+        doubleScores = _doubleScores;
         yScaleNum = byNum;
 
 
@@ -86,8 +88,8 @@ public class SwingLineGraph extends JPanel
                 maxVal = doubleScores[i];
         }
 
-        MAX_SCORE = ((int)(maxVal * 1.2))/yScaleNum * yScaleNum;
-        Y_HATCH_CNT = MAX_SCORE / yScaleNum;
+        yMax = ((int)(maxVal * 1.2))/yScaleNum * yScaleNum;
+        yTickCount = yMax / yScaleNum;
 
         this.setOpaque(false);
 
@@ -106,33 +108,33 @@ public class SwingLineGraph extends JPanel
         g2.setColor(goldTrim);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        double xScale = ((double) getWidth() - 2 * BORDER_GAP) / (maxX - 1);
-        double yScale = ((double) getHeight() - 2 * BORDER_GAP) / (MAX_SCORE);
+        double xScale = ((double) getWidth() - 2 * edgeOffset) / (maxX - 1);
+        double yScale = ((double) getHeight() - 2 * edgeOffset) / (yMax);
 
         List<Point> graphPoints = new ArrayList<Point>();
 
         for (int i = 0; i < maxX; i++) 
         {
-            int x1 = (int) (i * xScale + BORDER_GAP);
+            int x1 = (int) (i * xScale + edgeOffset);
             int y1;
             if(!doubleFlag)
-                y1 = (int) ((MAX_SCORE - (scores[i])) * yScale + BORDER_GAP);
+                y1 = (int) ((yMax - (intScores[i])) * yScale + edgeOffset);
             else
-                y1 = (int) ((MAX_SCORE - (doubleScores[i])) * yScale + BORDER_GAP);
+                y1 = (int) ((yMax - (doubleScores[i])) * yScale + edgeOffset);
             graphPoints.add(new Point(x1, y1));
         }
 
         // create x and y axes 
-        g2.drawLine(BORDER_GAP, getHeight() - BORDER_GAP, BORDER_GAP, BORDER_GAP);
-        g2.drawLine(BORDER_GAP, getHeight() - BORDER_GAP, getWidth() - BORDER_GAP, getHeight() - BORDER_GAP);
+        g2.drawLine(edgeOffset, getHeight() - edgeOffset, edgeOffset, edgeOffset);
+        g2.drawLine(edgeOffset, getHeight() - edgeOffset, getWidth() - edgeOffset, getHeight() - edgeOffset);
 
         // create hatch marks for y axis. 
-        for (int i = 0; i < Y_HATCH_CNT; i++) 
+        for (int i = 0; i < yTickCount; i++) 
         {
             g2.setColor(goldTrim);
-            int x0 = BORDER_GAP;
-            int x1 = BORDER_GAP + GRAPH_POINT_WIDTH;
-            int y0 = getHeight() - (((i + 1) * (getHeight() - BORDER_GAP * 2)) / Y_HATCH_CNT + BORDER_GAP);
+            int x0 = edgeOffset;
+            int x1 = edgeOffset + tickSize;
+            int y0 = getHeight() - (((i + 1) * (getHeight() - edgeOffset * 2)) / yTickCount + edgeOffset);
             int y1 = y0;
             g2.drawLine(x0, y0, x1, y1);
 
@@ -144,14 +146,14 @@ public class SwingLineGraph extends JPanel
         for (int i = 0; i < maxX - 1; i++) 
         {
             g2.setColor(goldTrim);
-            int x0 = (int) ((i+1) * xScale + BORDER_GAP);
+            int x0 = (int) ((i+1) * xScale + edgeOffset);
             int x1 = x0;
-            int y0 = getHeight() - BORDER_GAP;
+            int y0 = getHeight() - edgeOffset;
             int y1;
             if((i+1)%5 == 0)
-                y1 = y0 - GRAPH_POINT_WIDTH*2;
+                y1 = y0 - tickSize*2;
             else
-                y1 = y0 - GRAPH_POINT_WIDTH;
+                y1 = y0 - tickSize;
             g2.drawLine(x0, y0, x1, y1);
 
             g2.setColor(whiteText);
@@ -167,8 +169,8 @@ public class SwingLineGraph extends JPanel
         }
 
         Stroke oldStroke = g2.getStroke();
-        g2.setColor(GRAPH_COLOR);
-        g2.setStroke(GRAPH_STROKE);
+        g2.setColor(whiteText);
+        g2.setStroke(new BasicStroke(3f));
         for (int i = 0; i < graphPoints.size() - 1; i++) 
         {
             int x1 = graphPoints.get(i).x;
@@ -179,63 +181,16 @@ public class SwingLineGraph extends JPanel
         }
 
         g2.setStroke(oldStroke);      
-        g2.setColor(GRAPH_POINT_COLOR);
+        g2.setColor(goldTrim);
         for (int i = 0; i < graphPoints.size(); i++) 
         {
-            int x = graphPoints.get(i).x - GRAPH_POINT_WIDTH / 2;
-            int y = graphPoints.get(i).y - GRAPH_POINT_WIDTH / 2;;
-            int ovalW = GRAPH_POINT_WIDTH;
-            int ovalH = GRAPH_POINT_WIDTH;
+            int x = graphPoints.get(i).x - tickSize / 2;
+            int y = graphPoints.get(i).y - tickSize / 2;;
+            int ovalW = tickSize;
+            int ovalH = tickSize;
             g2.fillOval(x, y, ovalW, ovalH);
         }
        
     }
 
-  
-   
-  /*
-   private static void createAndShowGui() 
-   {
-      int[] scores = new int[16];
-      Random random = new Random();
-      int maxDataPoints = 16;
-      int maxScore = 20;
-      for (int i = 0; i < maxDataPoints ; i++) {
-         scores[i] = random.nextInt(maxScore);
-      }
-      SwingLineGraph mainPanel = new SwingLineGraph(scores);
-
-      JFrame frame = new JFrame("SwingLineGraph");
-      frame.getContentPane().add(mainPanel);
-      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      frame.pack();
-      frame.setVisible(true);
-   }
-   
-   
-      public static void createAndShowGui(SwingLineGraph sli) {
-
-      JFrame frame = new JFrame("SwingLineGraph");
-      frame.getContentPane().add(sli);
-      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      frame.pack();
-      frame.setVisible(true);
-   }
-
-   public static void main(String[] args) {
-      SwingUtilities.invokeLater(new Runnable() {
-         public void run() {
-            createAndShowGui();
-         }
-      });
-   }
-   
-   
-   public int convertYVal(int y)
-   {
-       double yScale = ((double) getHeight() - 2 * BORDER_GAP) / (MAX_SCORE - 1);
-       return (int)((BORDER_GAP - y)/yScale + MAX_SCORE);
-   }
-   */
-   
 }

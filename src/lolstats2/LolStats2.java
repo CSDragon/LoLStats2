@@ -7,7 +7,6 @@ import main.java.riotapi.RiotApi;
 import java.util.ArrayList;
 import java.io.File;
 import java.io.FileReader;
-import java.nio.file.Files;
 
 /**
  *
@@ -87,11 +86,8 @@ public class LolStats2
         SwingUI.getGui().createGraph(gpmem);
         SwingUI.getGui().showInner();
         SwingUI.getGui().repaint();
-        //SwingLineGraph.createAndShowGui(slg);
         
-  
-       
-        
+ 
     }
     
     
