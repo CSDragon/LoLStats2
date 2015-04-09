@@ -37,7 +37,7 @@ public class StatSelectPane  extends JPanel
     {
         try 
         {
-            selectBar = ImageIO.read(new File("assets/statsPaneSelectBarNoDetails.png"));
+            selectBar = ImageIO.read(new File("assets/statsPaneSelectBar.png"));
             selected = ImageIO.read(new File("assets/statsPaneSelected.png"));
         } 
         catch (IOException e){}

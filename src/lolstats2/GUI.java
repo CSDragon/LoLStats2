@@ -124,9 +124,9 @@ public class GUI extends JPanel
             bottomBar = ImageIO.read(new File("assets/BottomBar.png"));
             lookupButtonArt = ImageIO.read(new File("assets/SummonerLookupButton.png"));
         } 
-        catch (IOException e)
-        {System.out.println("bluh" + e);}
+        catch (IOException e) {}
         
+        nameInputLine.requestFocus();
     
 	}
 
