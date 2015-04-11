@@ -8,9 +8,7 @@ import javax.swing.*;
 import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.io.File;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.table.*;
+import javax.swing.JComboBox;
 
 /**
  * Handles interactions with the game's Graphical User Interface
@@ -26,6 +24,7 @@ public class GUI extends JPanel
     private BufferedImage lookupButtonArt;
     private StatSelectPane ssp;
     private ArtPanel artp;
+    private JComboBox<String> regionPicker;
     
     public static final int WIDTH = 640, HEIGHT = 480;
     
@@ -51,7 +50,7 @@ public class GUI extends JPanel
                 if(e.getKeyCode() == 10)
                 {
                     if(!nameInputLine.getText().equals(""))
-                        LolStats2.run(nameInputLine.getText());
+                        LolStats2.run(nameInputLine.getText(),(String)regionPicker.getSelectedItem());
                     else
                         hideInner();
                 }
@@ -78,7 +77,7 @@ public class GUI extends JPanel
             public void mouseClicked(MouseEvent e) 
             {
                 if(!nameInputLine.getText().equals(""))
-                    LolStats2.run(nameInputLine.getText());
+                    LolStats2.run(nameInputLine.getText(),(String)regionPicker.getSelectedItem());
                 else
                     hideInner();
             }
@@ -103,19 +102,22 @@ public class GUI extends JPanel
         add(artp);
         
         
-        JTable jt = new JTable(16,3);
-        jt.setSize(640,200);
-        jt.setLocation(0, 260);
-        jt.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        jt.getColumnModel().getColumn(0).setPreferredWidth(1);
-        jt.getColumnModel().getColumn(0).setWidth(1);
-        jt.getColumnModel().getColumn(1).setPreferredWidth(10);
-        jt.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-        jt.setVisible(true);
-        jt.setEnabled(false);
+        regionPicker = new JComboBox<>();
         
-        //add(jt);
+        regionPicker.addItem("NA"); //BR, EUNE, EUW, KR, LAS, LAN, NA, OCE, TR, RU, PBE, GLOBAL
+        regionPicker.addItem("EUW");
+        regionPicker.addItem("ENE");
+        regionPicker.addItem("KR");
+        regionPicker.addItem("LAS");
+        regionPicker.addItem("LAN");
+        regionPicker.addItem("OCE");
+        regionPicker.addItem("TR");
+        regionPicker.addItem("RU");
         
+        regionPicker.setSize(55, 20);
+        regionPicker.setLocation(30, 30);
+        regionPicker.setVisible(true);
+        add(regionPicker);
         
 
         try 
@@ -126,8 +128,19 @@ public class GUI extends JPanel
         } 
         catch (IOException e) {}
         
-        nameInputLine.requestFocus();
-    
+        this.addFocusListener(new FocusListener()
+        {
+            public void focusLost(FocusEvent e)
+            {
+                
+            }
+            
+            public void focusGained(FocusEvent e)
+            {
+                nameInputLine.requestFocus();
+            }
+        });
+        
 	}
 
 
@@ -186,7 +199,6 @@ public class GUI extends JPanel
         gcpPane.setVisible(false);
         artp.setVisible(true);
     }
-
 
     
 }

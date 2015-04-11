@@ -18,6 +18,7 @@ public class LolStats2
     
     
     public static RiotApi api;
+   
     
     /**
      * @param args the command line arguments
@@ -51,7 +52,7 @@ public class LolStats2
     }
     
     
-    public static void run(String playerName)
+    public static void run(String playerName, String region)
     {
         long playerID = 0;
         
@@ -63,21 +64,21 @@ public class LolStats2
         catch(Exception e)
         {
             System.exit(-1);
-        }
-       */ 
+        }*/
         
         
         
-
         
         
-        createSaveFolder();   
-        createPersonalSaveFolder(playerName);
+        
+        createSaveFolder();  
+        createRegionFolder(region);
+        createPersonalSaveFolder(playerName, region);
         
         //this has been commented out for offline testing
-        //getNewMatches(playerName, playerID);
+        //getNewMatches(playerName, playerID, region);
         
-        GoldAnalyst gpmem = new GoldAnalyst(loadRecordedMatches(playerName));
+        GoldAnalyst gpmem = new GoldAnalyst(loadRecordedMatches(playerName, region));
         gpmem.print();
         gpmem.printCreepsByMin();
         
@@ -100,12 +101,12 @@ public class LolStats2
     
     
     
-    public static ArrayList<Long> listRecordedMatches(String username)
+    public static ArrayList<Long> listRecordedMatches(String username, String region)
     {
         
         ArrayList<Long> list = new ArrayList<Long>();
         
-        File folder = new File("Saves/"+username);
+        File folder = new File("Saves/"+region+"/"+username);
         File[] listOfFiles = folder.listFiles();
 
         
@@ -119,15 +120,15 @@ public class LolStats2
         return list;
     }
     
-    public static ArrayList<Matchdata> loadRecordedMatches(String username)
+    public static ArrayList<Matchdata> loadRecordedMatches(String username, String region)
     {
-        ArrayList<Long> matchList = listRecordedMatches(username);
+        ArrayList<Long> matchList = listRecordedMatches(username,region);
         
         ArrayList<Matchdata> matches = new ArrayList<Matchdata>();
         
         for (Long curMatch : matchList) 
         {
-            matches.add(Matchdata.loadMD(curMatch, username));
+            matches.add(Matchdata.loadMD(curMatch, username, region));
         }
         
         
@@ -135,13 +136,13 @@ public class LolStats2
     }
     
     
-    public static void getNewMatches(String username, long playerID)
+    public static void getNewMatches(String username, long playerID, String region)
     {
         dto.MatchHistory.PlayerHistory MH = null;
         
         try
         {
-            MH = api.getMatchHistory(Region.NA, playerID);
+            MH = api.getMatchHistory(Region.valueOf(region), playerID);
         }
         catch(Exception e)
         {
@@ -157,7 +158,7 @@ public class LolStats2
         }
         
         
-        ArrayList<Long> recordedMatches = listRecordedMatches(username);
+        ArrayList<Long> recordedMatches = listRecordedMatches(username, region);
         
         ArrayList<Long> MHMatches = new ArrayList<Long>();
         
@@ -174,7 +175,7 @@ public class LolStats2
         for (Long curMatchID : MHMatches) 
         {
          //   SwingUI.updateStatus("Downloading Match "+curMatchID);
-            Matchdata.saveMD(new Matchdata(curMatchID, username, playerID));
+            Matchdata.saveMD(new Matchdata(curMatchID, username, playerID), region);
             try{Thread.sleep(1500);}catch(Exception e){}
             
         }
@@ -203,9 +204,28 @@ public class LolStats2
         }
     }
     
-    public static void createPersonalSaveFolder(String name)
+    public static void createRegionFolder(String region)
     {
-        File saveDirectory = new File("Saves/"+name);
+        File saveDirectory = new File("Saves/"+region);
+        if(!saveDirectory.exists())
+        {
+            System.out.println("Creating the region folder");
+            
+            try
+            {
+                saveDirectory.mkdir();
+            }
+            catch(SecurityException se)
+            {
+                System.out.println("Folder creation failed. Check your permissions.");
+                System.exit(-1);
+            }
+        }
+    }
+    
+    public static void createPersonalSaveFolder(String name, String region)
+    {
+        File saveDirectory = new File("Saves/"+region+"/"+name);
         if(!saveDirectory.exists())
         {
             System.out.println("Creating the save folder for user "+name);

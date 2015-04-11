@@ -79,7 +79,7 @@ public class Matchdata
         victory = match.getParticipants().get(participantID-1).getStats().isWinner();
     }
 
-    public static void saveMD(Matchdata out)
+    public static void saveMD(Matchdata out, String region)
     {
         Gson outGS = new Gson();
         String outStream = outGS.toJson(out);
@@ -89,7 +89,7 @@ public class Matchdata
 
         try 
         {
-          outputStream = new FileOutputStream("Saves/"+out.getPlayerName()+"/"+Long.toString(out.getMatchID())+".txt");
+          outputStream = new FileOutputStream("Saves/"+region+"/"+out.getPlayerName()+"/"+Long.toString(out.getMatchID())+".txt");
           outputStream.write(outStream.getBytes());
           outputStream.close();
         } 
@@ -101,14 +101,14 @@ public class Matchdata
         
     }
     
-    public static Matchdata loadMD(long matchID, String UserName)
+    public static Matchdata loadMD(long matchID, String UserName, String region)
     {
         FileReader fis;
         StringBuilder sb = new StringBuilder();
         
         try
         {
-            fis = new FileReader("Saves/"+UserName+"/"+Long.toString(matchID)+".txt");
+            fis = new FileReader("Saves/"+region+"/"+UserName+"/"+Long.toString(matchID)+".txt");
             BufferedReader bufferedReader = new BufferedReader(fis);
 
 

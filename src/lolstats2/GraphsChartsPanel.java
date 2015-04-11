@@ -18,7 +18,7 @@ import javax.swing.JPanel;
  */
 public class GraphsChartsPanel extends JPanel
 {
-    private JPanel optionsPane;
+    private OptionsPane optionsPane;
     private SwingLineGraph GPMGraph;
     private SwingLineGraph CPMGraph;
     private ChartPanel GPMChart;
@@ -40,13 +40,14 @@ public class GraphsChartsPanel extends JPanel
         
         
         setLayout(null);
+        optionsPane = new OptionsPane();
         GPMGraph = new SwingLineGraph(data.getGPMPerMin(), 100);
         CPMGraph = new SwingLineGraph(data.getCPMPerMin(),   1);
         GPMChart = new ChartPanel(data.getGPMPerMin(), data.getTotalGoldPerMin());
         CPMChart = new ChartPanel(data.getCPMPerMin(), data.getTotalCreepsPerMin());
         
-        //optionsPane.setLocation(0,0);
-        //optionsPane.setSize(640,360);
+        optionsPane.setLocation(0,0);
+        optionsPane.setSize(640,360);
         GPMGraph.setLocation(0,0);
         GPMGraph.setSize(640,360);
         CPMGraph.setLocation(0,0);
@@ -56,13 +57,13 @@ public class GraphsChartsPanel extends JPanel
         CPMChart.setLocation(0,0);
         CPMChart.setSize(640,360);
         
-        //add(optionsPane);
+        add(optionsPane);
         add(GPMGraph);
         add(CPMGraph);
         add(GPMChart);
         add(CPMChart);
         
-        //optionsPane.setVisible(false);
+        optionsPane.setVisible(false);
         GPMGraph.setVisible(true);
         CPMGraph.setVisible(false);
         GPMChart.setVisible(false);
@@ -79,7 +80,7 @@ public class GraphsChartsPanel extends JPanel
         
         if(paneNo == 0)
         {
-            //optionsPane.setVisible(true);
+            optionsPane.setVisible(true);
             GPMGraph.setVisible(false);
             CPMGraph.setVisible(false);
             GPMChart.setVisible(false);
@@ -87,7 +88,7 @@ public class GraphsChartsPanel extends JPanel
         }
         else if(paneNo == 1)
         {
-            //optionsPane.setVisible(false);
+            optionsPane.setVisible(false);
             GPMGraph.setVisible(true);
             CPMGraph.setVisible(false);
             GPMChart.setVisible(false);
@@ -95,7 +96,7 @@ public class GraphsChartsPanel extends JPanel
         }
         else if(paneNo == 2)
         {
-            //optionsPane.setVisible(false);
+            optionsPane.setVisible(false);
             GPMGraph.setVisible(false);
             CPMGraph.setVisible(true);
             GPMChart.setVisible(false);
@@ -103,7 +104,7 @@ public class GraphsChartsPanel extends JPanel
         }
         else if(paneNo == 3)
         {
-            //optionsPane.setVisible(false);
+            optionsPane.setVisible(false);
             GPMGraph.setVisible(false);
             CPMGraph.setVisible(false);
             GPMChart.setVisible(true);
@@ -111,7 +112,7 @@ public class GraphsChartsPanel extends JPanel
         }
         else if(paneNo == 4)
         {
-            //optionsPane.setVisible(false);
+            optionsPane.setVisible(false);
             GPMGraph.setVisible(false);
             CPMGraph.setVisible(false);
             GPMChart.setVisible(false);

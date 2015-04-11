@@ -6,7 +6,6 @@
 package lolstats2;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.*;
 import java.awt.*;
 import static java.awt.Frame.ICONIFIED;
@@ -50,6 +49,8 @@ public class SwingUI
         
 
         appFrame.setVisible(true);
+        
+        guiPanel.requestFocus();
         
     }
     
