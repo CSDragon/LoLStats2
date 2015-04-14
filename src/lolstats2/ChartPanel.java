@@ -82,22 +82,39 @@ public class ChartPanel  extends JPanel
         g2.drawString("Per Min", 419, 32);
         g2.drawString("Total", 483, 32);
         
-        for(int i = 0; i<18; i++)
+        int length;
+        if(!doubleSwitch)
+            length = intpm.length;
+        else
+            length = doublepm.length;
+        
+        for(int i = 0; i<18 && i < length; i++)
         {
             g2.drawString(Integer.toString(i), 96, (i*16)+48);
-            g2.drawString(Integer.toString(i+18), 379, (i*16)+48);
             if(!doubleSwitch)
             {
                 g2.drawString(Integer.toString(intpm[i]), 140, (i*16)+48);
                 g2.drawString(Integer.toString(intTotal[i]), 194, (i*16)+48);
-                g2.drawString(Integer.toString(intpm[i+18]), 423, (i*16)+48);
-                g2.drawString(Integer.toString(intTotal[i+18]), 477, (i*16)+48);
             }
-            
+
             else
             {
                 g2.drawString(Double.toString(doublepm[i]), 140, (i*16)+48);
                 g2.drawString(Double.toString(doubleTotal[i]), 194, (i*16)+48);
+            }
+        }
+
+        for(int i = 0; i<18 && i < length-18; i++)
+        {
+            g2.drawString(Integer.toString(i+18), 379, (i*16)+48);
+            if(!doubleSwitch)
+            {
+                g2.drawString(Integer.toString(intpm[i+18]), 423, (i*16)+48);
+                g2.drawString(Integer.toString(intTotal[i+18]), 477, (i*16)+48);
+            }
+
+            else
+            {
                 g2.drawString(Double.toString(doublepm[i+18]), 423, (i*16)+48);
                 g2.drawString(Double.toString(doubleTotal[i+18]), 477, (i*16)+48);
             }

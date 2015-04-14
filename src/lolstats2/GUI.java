@@ -25,6 +25,7 @@ public class GUI extends JPanel
     private StatSelectPane ssp;
     private ArtPanel artp;
     private JComboBox<String> regionPicker;
+    private String status = "Status";
     
     public static final int WIDTH = 640, HEIGHT = 480;
     
@@ -178,7 +179,7 @@ public class GUI extends JPanel
 		//draw Strings
 		g2.setColor(Color.decode("#FFFFFF"));
         g2.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-		g2.drawString("Status", 5, 475);
+		g2.drawString(status, 5, 475);
 		g2.drawString("Ver 1.0.0.1", 565, 475);//Figure Out a way to align this later.
 
 
@@ -200,5 +201,15 @@ public class GUI extends JPanel
         artp.setVisible(true);
     }
 
+    
+    public void changeStatus(String newStatus)
+    {
+        status = newStatus;
+    }
+    
+    public void resetStatus()
+    {
+        status = "Status";
+    }
     
 }

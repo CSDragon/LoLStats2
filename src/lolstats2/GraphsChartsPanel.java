@@ -27,9 +27,12 @@ public class GraphsChartsPanel extends JPanel
     private BufferedImage gold;
     private BufferedImage minion;
     private int minipic = 1;
+    private GoldAnalyst data;
     
-    public GraphsChartsPanel(GoldAnalyst data)
+    public GraphsChartsPanel(GoldAnalyst _data)
     {
+        data = _data;
+        
         try 
         {
             bluebkg = ImageIO.read(new File("assets/bluebkg.png"));
@@ -40,7 +43,7 @@ public class GraphsChartsPanel extends JPanel
         
         
         setLayout(null);
-        optionsPane = new OptionsPane();
+        optionsPane = new OptionsPane(this);
         GPMGraph = new SwingLineGraph(data.getGPMPerMin(), 100);
         CPMGraph = new SwingLineGraph(data.getCPMPerMin(),   1);
         GPMChart = new ChartPanel(data.getGPMPerMin(), data.getTotalGoldPerMin());
@@ -131,6 +134,40 @@ public class GraphsChartsPanel extends JPanel
             g2.drawImage(gold, -10, 300, null);
         else if(minipic == 2 || minipic == 4)
             g2.drawImage(minion, -25, 280, null);
+    }
+    
+    public void replaceCharts(int wl, int lowcpm, int highcpm)
+    {
+        data.recast(wl, lowcpm, highcpm);
+        
+        remove(GPMGraph);
+        remove(CPMGraph);
+        remove(GPMChart);
+        remove(CPMChart);
+        
+        GPMGraph = new SwingLineGraph(data.getGPMPerMin(), 100);
+        CPMGraph = new SwingLineGraph(data.getCPMPerMin(),   1);
+        GPMChart = new ChartPanel(data.getGPMPerMin(), data.getTotalGoldPerMin());
+        CPMChart = new ChartPanel(data.getCPMPerMin(), data.getTotalCreepsPerMin());
+        
+        GPMGraph.setLocation(0,0);
+        GPMGraph.setSize(640,360);
+        CPMGraph.setLocation(0,0);
+        CPMGraph.setSize(640,360);
+        GPMChart.setLocation(0,0);
+        GPMChart.setSize(640,360);
+        CPMChart.setLocation(0,0);
+        CPMChart.setSize(640,360);
+        
+        add(GPMGraph);
+        add(CPMGraph);
+        add(GPMChart);
+        add(CPMChart);
+
+        GPMGraph.setVisible(false);
+        CPMGraph.setVisible(false);
+        GPMChart.setVisible(false);
+        CPMChart.setVisible(false);
     }
     
 }

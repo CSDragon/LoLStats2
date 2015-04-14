@@ -66,8 +66,8 @@ public class BasePanel extends JPanel
     public static void main(String args[])
     {
         int ike = 0x002B167F;
-        int offset = 50;
-        for(int i = 0; i<10; i++)
+        int offset = 80;
+        for(int i = 0; i<30; i++)
         {
             System.out.println("00"+(Integer.toHexString(ike+((i+offset)*0x280))).toUpperCase()+" 0000000F");
         }

@@ -1,12 +1,13 @@
 
 package lolstats2;
 
-import constant.Region;
 import java.io.BufferedReader;
-import main.java.riotapi.RiotApi;
 import java.util.ArrayList;
 import java.io.File;
 import java.io.FileReader;
+import com.robrua.orianna.api.core.RiotAPI;
+import java.util.List;
+
 
 /**
  *
@@ -14,11 +15,6 @@ import java.io.FileReader;
  */
 public class LolStats2 
 {
-
-    
-    
-    public static RiotApi api;
-   
     
     /**
      * @param args the command line arguments
@@ -30,44 +26,29 @@ public class LolStats2
         try
         {
             BufferedReader br = new BufferedReader(new FileReader("key.txt"));
-            api = new RiotApi(br.readLine());
+            String s = br.readLine();
+            RiotAPI.setAPIKey(s);
+            RiotAPI.setRegion(com.robrua.orianna.type.core.common.Region.NA);
+            RiotAPI.setMirror(com.robrua.orianna.type.core.common.Region.NA);
         }
         catch(Exception e)
         {
-            api = new RiotApi("YOUR_API_KEY_HERE");
+            RiotAPI.setAPIKey("YOUR_API_KEY_HERE");
         }
         
 
         SwingUI ui = new SwingUI();
         
-        long playerID = -1;
-        String playerName;
-        
-        
-        
-        System.out.println("Yosh");
-        
-
-
     }
     
     
     public static void run(String playerName, String region)
     {
         long playerID = 0;
-        
         //this has been commented out for offline testing
-        /*try
-        {
-            playerID = api.getSummonerByName(Region.NA, playerName).get(playerName.toLowerCase()).getId();
-        }
-        catch(Exception e)
-        {
-            System.exit(-1);
-        }*/
-        
-        
-        
+        playerID = RiotAPI.getSummonerByName(playerName).getID();
+
+   
         
         
         
@@ -76,9 +57,9 @@ public class LolStats2
         createPersonalSaveFolder(playerName, region);
         
         //this has been commented out for offline testing
-        //getNewMatches(playerName, playerID, region);
+        getNewMatches(playerName, playerID, region);
         
-        GoldAnalyst gpmem = new GoldAnalyst(loadRecordedMatches(playerName, region));
+        GoldAnalyst gpmem = new GoldAnalyst(loadRecordedMatches(playerName, region),0,3,-1);
         gpmem.print();
         gpmem.printCreepsByMin();
         
@@ -87,8 +68,7 @@ public class LolStats2
         SwingUI.getGui().createGraph(gpmem);
         SwingUI.getGui().showInner();
         SwingUI.getGui().repaint();
-        
- 
+  
     }
     
     
@@ -138,20 +118,12 @@ public class LolStats2
     
     public static void getNewMatches(String username, long playerID, String region)
     {
-        dto.MatchHistory.PlayerHistory MH = null;
         
-        try
-        {
-            MH = api.getMatchHistory(Region.valueOf(region), playerID);
-        }
-        catch(Exception e)
-        {
-            //temp sollution
-            System.exit(-1);
-        }
+        List<com.robrua.orianna.type.core.matchhistory.MatchSummary> mh = RiotAPI.getMatchHistory(playerID);
+        
         
         //if player doesn't have a match history
-        if (MH.getMatches() == null)
+        if(mh.isEmpty())
         {
             System.out.println("Riot API found an empty match history for this Summoner. It's probably been too long since they've played a game.");
             return;
@@ -162,23 +134,21 @@ public class LolStats2
         
         ArrayList<Long> MHMatches = new ArrayList<Long>();
         
-        for(int i = 0; i<MH.getMatches().size(); i++)
+        for(int i = 0; i<mh.size(); i++)
         {
-            MHMatches.add(MH.getMatches().get(i).getMatchId());
+            MHMatches.add(mh.get(i).getID());
         }
         
         MHMatches.removeAll(recordedMatches);
         
         
-        
+        SwingUI.getGui().changeStatus("Downloading Matches...");
         
         for (Long curMatchID : MHMatches) 
-        {
-         //   SwingUI.updateStatus("Downloading Match "+curMatchID);
             Matchdata.saveMD(new Matchdata(curMatchID, username, playerID), region);
-            try{Thread.sleep(1500);}catch(Exception e){}
-            
-        }
+
+        
+        SwingUI.getGui().resetStatus();
         
         
         

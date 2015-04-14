@@ -1,9 +1,9 @@
 package lolstats2;
 
-import constant.Region;
-import main.java.riotapi.RiotApi;
+import com.robrua.orianna.api.core.RiotAPI;
 import com.google.gson.*;
 import java.io.*;
+import com.robrua.orianna.type.core.match.Match;
 
 
 
@@ -21,7 +21,7 @@ public class Matchdata
     private int[] totalCreepsEachMinute;
     private int[] individualCEM;
     private int gpm;
-    private int cpm;
+    private double cpm;
     private boolean victory;
 
     
@@ -33,22 +33,11 @@ public class Matchdata
     
     public Matchdata(long _matchID, String _playerName, long _playerID)
     {
-        this.matchID = _matchID;
-        this.playerName = _playerName;
-        this.playerID = _playerID;
-        dto.Match.MatchDetail match = null;
-        
-        try
-        {
-            match = LolStats2.api.getMatch(Region.NA, _matchID ,true);
-        }
-        catch(Exception e)
-        {
-            //temp sollution
-            System.out.println("Error: Could not accuire match");
-            System.exit(-1);
-        }
-        
+        matchID = _matchID;
+        playerName = _playerName;
+        playerID = _playerID;
+
+        Match match =  RiotAPI.getMatch(_matchID);      
         
         participantID = getIdentityFromSummonerID(match, playerID);
         totalGoldEachMinute = goldEachMinute(match, participantID);
@@ -76,7 +65,7 @@ public class Matchdata
         gpm = totalGoldEachMinute[totalGoldEachMinute.length-1]/totalGoldEachMinute.length;
         cpm = totalCreepsEachMinute[totalCreepsEachMinute.length-1]/totalCreepsEachMinute.length;
         
-        victory = match.getParticipants().get(participantID-1).getStats().isWinner();
+        victory = match.getParticipants().get(participantID-1).getStats().getWinner();
     }
 
     public static void saveMD(Matchdata out, String region)
@@ -138,14 +127,14 @@ public class Matchdata
     }
     
     
-    public static int getIdentityFromSummonerID(dto.Match.MatchDetail match, long playerID)
+    public static int getIdentityFromSummonerID(Match match, long playerID)
     {
         int playerNum=-1;
 
         for(int i = 0; i<10; i++)
         {
-            if(match.getParticipantIdentities().get(i).getPlayer().getSummonerId() == playerID)
-                playerNum=match.getParticipantIdentities().get(i).getParticipantId();
+            if(match.getParticipants().get(i).getSummonerID() == playerID)
+                playerNum = match.getParticipants().get(i).getParticipantID();
 
         }
 
@@ -153,22 +142,22 @@ public class Matchdata
     }
     
     
-    public static int getIdentityFromSummonerName(dto.Match.MatchDetail match, String playerName)
+    public static int getIdentityFromSummonerName(Match match, String playerName)
     {
         int playerNum=-1;
 
         for(int i = 0; i<10; i++)
         {
-            if(match.getParticipantIdentities().get(i).getPlayer().getSummonerName().equals(playerName))
-                playerNum=match.getParticipantIdentities().get(i).getParticipantId();
+            if(match.getParticipants().get(i).getSummonerName().equals(playerName))
+                playerNum=match.getParticipants().get(i).getParticipantID();
 
         }
 
         return playerNum;
     }
     
-    
-    public static int[] goldEachMinute(dto.Match.MatchDetail match, int participantId)
+
+    public static int[] goldEachMinute(Match match, int participantId)
     {
         int length = match.getTimeline().getFrames().size();
         
@@ -176,7 +165,7 @@ public class Matchdata
         
         for(int i = 0; i<length; i++)
         {
-            totalGoldAtMin[i] = match.getTimeline().getFrames().get(i).getParticipantFrames().get(Integer.toString(participantId)).getTotalGold();
+            totalGoldAtMin[i] = match.getTimeline().getFrames().get(i).getParticipantFrames().get(participantId).getTotalGold();
         }
         
         return totalGoldAtMin;
@@ -184,8 +173,8 @@ public class Matchdata
     }
     
     
-        
-    public static int[] creepsEachMinute(dto.Match.MatchDetail match, int participantId)
+
+    public static int[] creepsEachMinute(Match match, int participantId)
     {
         int length = match.getTimeline().getFrames().size();
         
@@ -193,7 +182,7 @@ public class Matchdata
         
         for(int i = 0; i<length; i++)
         {
-            totalCreepsAtMin[i] = match.getTimeline().getFrames().get(i).getParticipantFrames().get(Integer.toString(participantId)).getMinionsKilled();
+            totalCreepsAtMin[i] = match.getTimeline().getFrames().get(i).getParticipantFrames().get(participantId).getMinionsKilled();
         }
         
         return totalCreepsAtMin;
@@ -238,7 +227,7 @@ public class Matchdata
         return gpm;
     }
     
-    public int getCPM()
+    public double getCPM()
     {
         return cpm;
     }
@@ -247,6 +236,11 @@ public class Matchdata
     public int getNumMinutes()
     {
         return minutes;
+    }
+    
+    public boolean getVictory()
+    {
+        return victory;
     }
     
 }

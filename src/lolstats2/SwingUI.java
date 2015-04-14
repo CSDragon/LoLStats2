@@ -22,7 +22,6 @@ public class SwingUI
     private static GUI guiPanel;
     private static JButton nameButton;
     private static JTextField nameTextField;
-    private static JLabel statusLabel;
     
     private TrayIcon trayIcon;
     private SystemTray tray;
@@ -38,7 +37,7 @@ public class SwingUI
         
         // Display GUI
         appFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		appFrame.setResizable(false);
+		//appFrame.setResizable(false);
         
         guiPanel = new GUI();
         
@@ -113,12 +112,6 @@ public class SwingUI
         return guiPanel;
     }
     
-    public static void updateStatus(String s)
-    {
-        statusLabel.setText(s);
-        
-        appFrame.repaint();
-    }
     
     
 

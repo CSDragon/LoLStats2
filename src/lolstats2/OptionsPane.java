@@ -5,6 +5,8 @@
  */
 package lolstats2;
 
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -20,9 +22,12 @@ public class OptionsPane extends JPanel
     private JTextField creepScoreLow;
     private JTextField creepScoreHigh;
     private JButton applyOptions;
+    private GraphsChartsPanel parent;
        
-    public OptionsPane()
+    public OptionsPane(GraphsChartsPanel _parent)
     {
+        parent = _parent;
+        
         setLayout(null);
         
         winLossPicker = new JComboBox<>();
@@ -48,9 +53,57 @@ public class OptionsPane extends JPanel
         applyOptions = new JButton("Apply");
         applyOptions.setSize(70,20);
         applyOptions.setLocation(30,120);
+        applyOptions.addMouseListener(new MouseListener()
+        {
+            public void mousePressed(MouseEvent e) {}
+            public void mouseReleased(MouseEvent e) {}
+            
+            public void mouseClicked(MouseEvent e) 
+            {
+                replaceCharts();
+            }
+
+            public void mouseEntered(MouseEvent e) {}
+            public void mouseExited(MouseEvent e) {}
+        });
         add(applyOptions);
         
         setOpaque(false);
+        
+    }
+    
+    
+    public void replaceCharts()
+    {
+        int wl = -1;
+        int lowc;
+        int highc;
+        
+        wl = winLossPicker.getSelectedIndex();
+        
+        
+        try
+        {
+            lowc = Integer.valueOf(creepScoreLow.getText());
+        }
+        catch(Exception E)
+        {
+            lowc = -1;
+        }
+        
+        try
+        {
+            highc = Integer.valueOf(creepScoreHigh.getText());
+        }
+        catch(Exception E)
+        {
+            highc = -1;
+        }
+        
+        
+        if(highc > lowc || (highc == -1))
+            parent.replaceCharts(wl, lowc, highc);
+        
         
     }
 }

@@ -10,6 +10,7 @@ import java.text.DecimalFormat;
 
 public class GoldAnalyst 
 {
+    ArrayList<Matchdata> data;
     private int[] countPerMin;
     private int[] totalGoldPerMin;
     private int[] GPMPerMin;
@@ -21,8 +22,9 @@ public class GoldAnalyst
     private int nonSupGames;
     private int maxTime;
     
-    public GoldAnalyst(ArrayList<Matchdata> data)
+    public GoldAnalyst(ArrayList<Matchdata> _data)
     {
+        data = _data;
         
         totalGames = data.size();
         
@@ -32,11 +34,9 @@ public class GoldAnalyst
         
         for(int i = 0; i<totalGames; i++)
         {
-            if(maxTime < data.get(i).getNumMinutes() && data.get(i).getCPM() > 3)
+            if(maxTime < data.get(i).getNumMinutes() && data.get(i).getCPM() >= 4)
                 maxTime = data.get(i).getNumMinutes();
         }
-        
-        System.out.println("MT:"+maxTime);
         
         countPerMin = new int[maxTime];
         totalGoldPerMin = new int[maxTime];
@@ -49,7 +49,7 @@ public class GoldAnalyst
         
         for(int i=0; i<totalGames; i++)
         {
-            if(data.get(i).getCPM() > 3)
+            if(data.get(i).getCPM() >= 3)
             {
                 for(int j=1; j<data.get(i).getNumMinutes(); j++)
                 {
@@ -82,6 +82,154 @@ public class GoldAnalyst
         }
         
     }
+    
+    
+    public GoldAnalyst(ArrayList<Matchdata> _data, int victory, int minCreeps, int maxCreeps)
+    {
+        data = _data;
+        
+        boolean countWins = true;
+        boolean countLosses = true;
+        if(victory == 1)
+            countLosses = false;
+        if(victory == 2)
+            countWins = false;
+        
+        totalGames = data.size();
+        
+        DecimalFormat df = new DecimalFormat("#.00");
+
+        maxTime=0;
+        
+        for(int i = 0; i<totalGames; i++)
+        {
+            if(maxTime < data.get(i).getNumMinutes() && data.get(i).getCPM() >= minCreeps)
+                maxTime = data.get(i).getNumMinutes();
+        }
+        
+
+        countPerMin = new int[maxTime];
+        totalGoldPerMin = new int[maxTime];
+        GPMPerMin = new int[maxTime];
+        totalCreepsPerMin = new double[maxTime];
+        CPMPerMin = new double[maxTime];
+        gpm = 0;
+        cpm = 0;
+        nonSupGames=0;
+        
+        for(int i=0; i<totalGames; i++)
+        {
+            boolean winLossCheck = (countWins && countLosses)||(countWins && data.get(i).getVictory())||(countLosses && !data.get(i).getVictory());
+            boolean creepLow = (minCreeps == -1 || data.get(i).getCPM() >= minCreeps);
+            boolean creepHigh = (maxCreeps == -1 || data.get(i).getCPM() <= maxCreeps);
+            
+            if(creepLow && creepHigh && winLossCheck)
+            {
+                for(int j=1; j<data.get(i).getNumMinutes(); j++)
+                {
+                    countPerMin[j]++;
+                    totalGoldPerMin[j] += data.get(i).getTotalGoldEachMinute()[j];
+                    GPMPerMin[j] += data.get(i).getIndividualGEM()[j];
+                    totalCreepsPerMin[j] += data.get(i).getTotalCreepsEachMinute()[j];
+                    CPMPerMin[j] += data.get(i).getIndividualCEM()[j];
+                }
+
+                gpm += data.get(i).getGPM();
+                cpm += data.get(i).getCPM();
+                nonSupGames++;
+            }
+        }
+        
+        for(int i = 1; i<maxTime; i++)
+        {
+            totalGoldPerMin[i]/=countPerMin[i];
+            GPMPerMin[i]/=countPerMin[i];
+            totalCreepsPerMin[i] = Double.valueOf(df.format(totalCreepsPerMin[i]/countPerMin[i]));
+            CPMPerMin[i] = Double.valueOf(df.format(CPMPerMin[i]/countPerMin[i]));
+        }
+        
+        //Just fixing a derp.
+        totalGoldPerMin[0] = 475;
+        
+        
+        if(nonSupGames !=0)
+        {
+            gpm/=nonSupGames;
+            cpm/=nonSupGames;
+        }
+        
+    }
+    
+    
+    public void recast(int victory, int minCreeps, int maxCreeps)
+    {
+
+        boolean countWins = true;
+        boolean countLosses = true;
+        if(victory == 1)
+            countLosses = false;
+        if(victory == 2)
+            countWins = false;
+        
+        
+        DecimalFormat df = new DecimalFormat("#.00");
+
+        
+        countPerMin = new int[maxTime];
+        totalGoldPerMin = new int[maxTime];
+        GPMPerMin = new int[maxTime];
+        totalCreepsPerMin = new double[maxTime];
+        CPMPerMin = new double[maxTime];
+        gpm = 0;
+        cpm = 0;
+        nonSupGames=0;
+        
+        for(int i=0; i<totalGames; i++)
+        {
+            boolean winLossCheck = (countWins && countLosses)||(countWins && data.get(i).getVictory())||(countLosses && !data.get(i).getVictory());
+            boolean creepLow = (minCreeps == -1 || data.get(i).getCPM() >= minCreeps);
+            boolean creepHigh = (maxCreeps == -1 || data.get(i).getCPM() <= maxCreeps);
+            
+            if(creepLow && creepHigh && winLossCheck)
+            {
+                for(int j=1; j<data.get(i).getNumMinutes(); j++)
+                {
+                    countPerMin[j]++;
+                    totalGoldPerMin[j] += data.get(i).getTotalGoldEachMinute()[j];
+                    GPMPerMin[j] += data.get(i).getIndividualGEM()[j];
+                    totalCreepsPerMin[j] += data.get(i).getTotalCreepsEachMinute()[j];
+                    CPMPerMin[j] += data.get(i).getIndividualCEM()[j];
+                }
+
+                gpm += data.get(i).getGPM();
+                cpm += data.get(i).getCPM();
+                nonSupGames++;
+            }
+        }
+        
+        for(int i = 1; i<maxTime; i++)
+        {
+            if(countPerMin[i] != 0)
+            {
+                totalGoldPerMin[i]/=countPerMin[i];
+                GPMPerMin[i]/=countPerMin[i];
+                totalCreepsPerMin[i] = Double.valueOf(df.format(totalCreepsPerMin[i]/countPerMin[i]));
+                CPMPerMin[i] = Double.valueOf(df.format(CPMPerMin[i]/countPerMin[i]));
+            }
+        }
+        
+        //Just fixing a derp.
+        totalGoldPerMin[0] = 475;
+        
+        
+        if(nonSupGames !=0)
+        {
+            gpm/=nonSupGames;
+            cpm/=nonSupGames;
+        }
+        
+    }
+    
     
     public void print()
     {
