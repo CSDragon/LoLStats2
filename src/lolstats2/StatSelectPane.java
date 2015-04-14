@@ -25,7 +25,11 @@ import javax.swing.JPanel;
 
 
     
-
+/**
+ * The panel that chooses which graph we're looking at.
+ * 
+ * @author Chris
+ */
 public class StatSelectPane  extends JPanel
 {
     private BufferedImage selectBar;
@@ -33,6 +37,9 @@ public class StatSelectPane  extends JPanel
     private int selectedLoc = 102;
     private GraphsChartsPanel target = null;
     
+    /**
+     * Creates the panel
+     */
     public StatSelectPane()
     {
         try 
@@ -91,6 +98,10 @@ public class StatSelectPane  extends JPanel
         
     }
     
+    /**
+     * Because this object never changes, this method will make it accept a new GraphsChartsPanel and resets selectedLoc 
+     * @param _target the new GraphsChartsPanel
+     */
     public void setTarget(GraphsChartsPanel _target)
     {
         target = _target;
@@ -99,7 +110,11 @@ public class StatSelectPane  extends JPanel
     
     
     
-    @Override
+    /**
+     * Draws the component
+     * 
+     * @param g Graphics
+     */
     protected void paintComponent(Graphics g) 
     {
         Graphics2D g2 = (Graphics2D)g;

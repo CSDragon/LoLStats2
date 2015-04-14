@@ -2,7 +2,6 @@ package lolstats2;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -17,7 +16,12 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-@SuppressWarnings("serial")
+/**
+ * Creates a line graph in Swing
+ * Using some code form StackExchange User "Hovecraft Full of Eels" http://stackoverflow.com/a/8693635/4373567
+ * 
+ * @author Chris
+ */
 public class SwingLineGraph extends JPanel 
 {
     private int yMax;
@@ -37,8 +41,15 @@ public class SwingLineGraph extends JPanel
     private Color goldTrim = Color.decode("0xdcb64a");
     private Color whiteText = Color.decode("0xCFCFCF");
     
+    /**
+     * Creates a graph using ints.
+     * 
+     * @param _intScores The points we will be graphing, as ints
+     * @param byNum The Y Scale of the graph
+     */
     public SwingLineGraph(int[] _intScores, int byNum) 
     {
+        //Load in the art assets
         try 
         {
             graphBkg = ImageIO.read(new File("assets/graphbkg.png"));
@@ -66,6 +77,12 @@ public class SwingLineGraph extends JPanel
        doubleFlag = false;
     }
 
+    /**
+     * Creates a graph using doubles
+     * 
+     * @param _doubleScores The points we will graph, as doubles
+     * @param byNum The Y Scale of the graph
+     */
     public SwingLineGraph(double[] _doubleScores, int byNum) 
     {
         try 
@@ -96,8 +113,12 @@ public class SwingLineGraph extends JPanel
         doubleFlag = true;
     }
    
-   
-    @Override
+
+    /**
+     * Paints the graph
+     * 
+     * @param g Graphics sent by the parent object.
+     */
     protected void paintComponent(Graphics g) 
     {
         Graphics2D g2 = (Graphics2D)g;

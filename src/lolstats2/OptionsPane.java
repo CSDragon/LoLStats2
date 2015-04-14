@@ -13,6 +13,7 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 
 /**
+ * Handles the options for the stats panels
  *
  * @author Chris
  */
@@ -24,6 +25,10 @@ public class OptionsPane extends JPanel
     private JButton applyOptions;
     private GraphsChartsPanel parent;
        
+    /**
+     * Creates the options pane
+     * @param _parent the GraphsChartsPanel that made this OptionsPane
+     */
     public OptionsPane(GraphsChartsPanel _parent)
     {
         parent = _parent;
@@ -72,7 +77,9 @@ public class OptionsPane extends JPanel
         
     }
     
-    
+    /**
+     * Read the option fields and pass it to parent to refactor the graphs and charts
+     */
     public void replaceCharts()
     {
         int wl = -1;

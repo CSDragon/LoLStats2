@@ -6,15 +6,20 @@ import java.util.ArrayList;
 import java.io.File;
 import java.io.FileReader;
 import com.robrua.orianna.api.core.RiotAPI;
+import com.robrua.orianna.type.core.common.Region;
+import com.robrua.orianna.type.core.match.Match;
 import java.util.List;
 
 
 /**
- *
+ * A program to monitor GPM and CPM
+ * 
  * @author Chris
  */
 public class LolStats2 
 {
+    private static SwingUI ui;
+    
     
     /**
      * @param args the command line arguments
@@ -37,56 +42,55 @@ public class LolStats2
         }
         
 
-        SwingUI ui = new SwingUI();
+        ui = new SwingUI();
         
     }
     
-    
-    public static void run(String playerName, String region)
+    /**
+     * Gets new matches, loads old ones, creates a GoldAnalyst and gives it to the GUI to display as stats.
+     * 
+     * @param summonerName The Summoner name we will be viewing
+     * @param region The Region the summoner is from
+     */
+    public static void run(String summonerName, String region)
     {
         long playerID = 0;
         //this has been commented out for offline testing
-        playerID = RiotAPI.getSummonerByName(playerName).getID();
+        RiotAPI.setRegion(Region.valueOf(region));
+        playerID = RiotAPI.getSummonerByName(summonerName).getID();
 
-   
         
         
-        
-        createSaveFolder();  
+        createSavesFolder();  
         createRegionFolder(region);
-        createPersonalSaveFolder(playerName, region);
+        createPersonalSaveFolder(summonerName, region);
         
         //this has been commented out for offline testing
-        getNewMatches(playerName, playerID, region);
+        getNewMatches(summonerName, playerID, region);
         
-        GoldAnalyst gpmem = new GoldAnalyst(loadRecordedMatches(playerName, region),0,3,-1);
-        gpmem.print();
-        gpmem.printCreepsByMin();
+        GoldAnalyst gpmem = new GoldAnalyst(loadRecordedMatches(summonerName, region),0,3,-1);
         
         
         
-        SwingUI.getGui().createGraph(gpmem);
-        SwingUI.getGui().showInner();
-        SwingUI.getGui().repaint();
+        ui.getGui().createGraph(gpmem);
+        ui.getGui().showInner();
+        ui.getGui().repaint();
   
     }
     
-    
-    
-    
-
-
- 
-
-    
-    
-    
-    public static ArrayList<Long> listRecordedMatches(String username, String region)
+    /**
+     * Gives you a list of the Match IDs of all locally stored matches for the summoner we want. (used for indexing)
+     * 
+     * @param summonerName The Summoner name we will be viewing
+     * @param region The Region the summoner is from
+     * @return A list of all matches stored locally for this summoner as Longs
+     */
+    public static ArrayList<Long> listRecordedMatches(String summonerName, String region)
     {
         
         ArrayList<Long> list = new ArrayList<Long>();
         
-        File folder = new File("Saves/"+region+"/"+username);
+        File folder = new File("Saves/"+region+"/"+summonerName);
         File[] listOfFiles = folder.listFiles();
 
         
@@ -100,23 +104,36 @@ public class LolStats2
         return list;
     }
     
-    public static ArrayList<Matchdata> loadRecordedMatches(String username, String region)
+    /**
+     * Gives you a list of all the matches, in Matchdata format, stored locally for the summoner we want.
+     * 
+     * @param summonerName The Summoner name we will be viewing
+     * @param region The Region the summoner is from
+     * @return A list of all matches stored locally for this summoner as Matchdatas.
+     */
+    public static ArrayList<Matchdata> loadRecordedMatches(String summonerName, String region)
     {
-        ArrayList<Long> matchList = listRecordedMatches(username,region);
+        ArrayList<Long> matchList = listRecordedMatches(summonerName,region);
         
         ArrayList<Matchdata> matches = new ArrayList<Matchdata>();
         
         for (Long curMatch : matchList) 
         {
-            matches.add(Matchdata.loadMD(curMatch, username, region));
+            matches.add(Matchdata.loadMD(curMatch, summonerName, region));
         }
         
         
         return matches;
     }
     
-    
-    public static void getNewMatches(String username, long playerID, String region)
+    /**
+     * Looks up new matches and stores them locally
+     * 
+     * @param summonerName The Summoner name we will be viewing
+     * @param playerID The ID of the Summoner we will be viewing
+     * @param region The Region the summoner is from
+     */
+    public static void getNewMatches(String summonerName, long playerID, String region)
     {
         
         List<com.robrua.orianna.type.core.matchhistory.MatchSummary> mh = RiotAPI.getMatchHistory(playerID);
@@ -130,7 +147,7 @@ public class LolStats2
         }
         
         
-        ArrayList<Long> recordedMatches = listRecordedMatches(username, region);
+        ArrayList<Long> recordedMatches = listRecordedMatches(summonerName, region);
         
         ArrayList<Long> MHMatches = new ArrayList<Long>();
         
@@ -142,20 +159,25 @@ public class LolStats2
         MHMatches.removeAll(recordedMatches);
         
         
-        SwingUI.getGui().changeStatus("Downloading Matches...");
+        ui.getGui().changeStatus("Downloading Matches...");
         
         for (Long curMatchID : MHMatches) 
-            Matchdata.saveMD(new Matchdata(curMatchID, username, playerID), region);
-
+        {
+            Match match =  RiotAPI.getMatch(curMatchID);
+            if(match.getType() == com.robrua.orianna.type.core.common.GameType.MATCHED_GAME)
+                Matchdata.saveMD(new Matchdata(match, curMatchID, summonerName, playerID), region);
+        }
         
-        SwingUI.getGui().resetStatus();
+        ui.getGui().resetStatus();
         
         
         
     }
     
-    
-    public static void createSaveFolder()
+    /**
+     * Creates the Saves folder if it doesn't already exist
+     */
+    public static void createSavesFolder()
     {
         File saveDirectory = new File("Saves");
         if(!saveDirectory.exists())
@@ -174,6 +196,11 @@ public class LolStats2
         }
     }
     
+    /**
+     * Creates a region folder if it doesn't already exist, in Saves
+     * 
+     * @param region The Region the summoner is from
+     */
     public static void createRegionFolder(String region)
     {
         File saveDirectory = new File("Saves/"+region);
@@ -193,12 +220,18 @@ public class LolStats2
         }
     }
     
-    public static void createPersonalSaveFolder(String name, String region)
+    /**
+     * Creates the individual Summoner's save folder, in the region folder, in Saves
+     * 
+     * @param summonerName The Summoner name we will be viewing
+     * @param region The Region the summoner is from
+     */
+    public static void createPersonalSaveFolder(String summonerName, String region)
     {
-        File saveDirectory = new File("Saves/"+region+"/"+name);
+        File saveDirectory = new File("Saves/"+region+"/"+summonerName);
         if(!saveDirectory.exists())
         {
-            System.out.println("Creating the save folder for user "+name);
+            System.out.println("Creating the save folder for user "+summonerName);
             
             try
             {
@@ -212,30 +245,5 @@ public class LolStats2
         }
     }
     
-    
-    
-    
  
-    
-    
-    
-    
-    
-    //TODO
-    private static String[] roles = {"SOLOTOP", "NONEJUNGLE", "SOLOMID", "DUO_CARRYBOT","DUO_SUPPORTBOT"};
-    public static boolean roleSanityCheck(dto.Match.MatchDetail match, int participantId)
-    {
-        String role = match.getParticipants().get(participantId).getTimeline().getRole() + match.getParticipants().get(participantId).getTimeline().getLane();
-       
-       
-       
-       
-        return false;
-    }
-    
-    
-    
-    
-    
-    
 }

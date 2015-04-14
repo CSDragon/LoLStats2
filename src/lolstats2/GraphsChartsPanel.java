@@ -12,8 +12,10 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+
 /**
- *
+ * Contains the Graphs, Charts and options.
+ * 
  * @author Chris
  */
 public class GraphsChartsPanel extends JPanel
@@ -29,6 +31,10 @@ public class GraphsChartsPanel extends JPanel
     private int minipic = 1;
     private GoldAnalyst data;
     
+    /**
+     * Creates the panel and sets up the contents
+     * @param _data the GoldAnalyst we're turning into graphs
+     */
     public GraphsChartsPanel(GoldAnalyst _data)
     {
         data = _data;
@@ -77,6 +83,10 @@ public class GraphsChartsPanel extends JPanel
         
     }
     
+    /**
+     * Changes the active chart or graph.
+     * @param paneNo The number we want. 0: Options, 1: GPMGraph, 2: CPMGraph, 3: GPMChart, 4:CPMChart
+     */
     public void paneChanged(int paneNo)
     {
         minipic = paneNo;
@@ -123,7 +133,11 @@ public class GraphsChartsPanel extends JPanel
         }
     }
     
-    @Override
+    /**
+     * Draws the gold and minion icons, as well as this pane's children
+     * 
+     * @param g Graphics
+     */
     protected void paintComponent(Graphics g) 
     {
         super.paintComponent(g);
@@ -136,6 +150,12 @@ public class GraphsChartsPanel extends JPanel
             g2.drawImage(minion, -25, 280, null);
     }
     
+    /**
+     * Refactors data to have different specifications
+     * @param wl both, win or loss
+     * @param lowcpm low cpm bound
+     * @param highcpm high cpm bound
+     */
     public void replaceCharts(int wl, int lowcpm, int highcpm)
     {
         data.recast(wl, lowcpm, highcpm);

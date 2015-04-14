@@ -6,54 +6,55 @@
 package lolstats2;
 
 import javax.swing.JFrame;
-import javax.swing.*;
 import java.awt.*;
 import static java.awt.Frame.ICONIFIED;
 import static java.awt.Frame.NORMAL;
 import java.awt.event.*;
 
 /**
-*
+ * A class that acts as the container for the GUI, manages the JFrame, and manages the trayIcon
+ * 
  * @author Chris
  */
 public class SwingUI
 {
-    private static JFrame appFrame;
-    private static GUI guiPanel;
-    private static JButton nameButton;
-    private static JTextField nameTextField;
-    
+    private JFrame appFrame;
+    private GUI guiPanel;
     private TrayIcon trayIcon;
     private SystemTray tray;
     
-    
+    /**
+     * Creates the SwingUI object.
+     * 
+     */
     public SwingUI()
     {
         appFrame = new JFrame("LoL Gold Data");
       
         
+        //For clarity and reusability purposes, this was moved to its own method.
         setUpTray();
        
         
         // Display GUI
         appFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//appFrame.setResizable(false);
+		appFrame.setResizable(false);
         
         guiPanel = new GUI();
-        
         appFrame.add(guiPanel);
-
+        
         appFrame.pack();
-        //appFrame.setSize(646,508);
-        
-
         appFrame.setVisible(true);
-        
         guiPanel.requestFocus();
         
     }
     
-    public void setUpTray()
+    /**
+     * If minimize-to-tray is available on the desktop configuration, minimise to tray.
+     * Final to avoid overridable method in constructor problems
+     * 
+     */
+    public final void setUpTray()
     {
         if(SystemTray.isSupported())
         {
@@ -107,7 +108,11 @@ public class SwingUI
     }
     
    
-    public static GUI getGui()
+    /**
+     * 
+     * @return guiPanel
+     */
+    public GUI getGui()
     {
         return guiPanel;
     }

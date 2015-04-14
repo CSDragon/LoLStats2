@@ -18,7 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 
 /**
- *
+ * Draws the charts
+ * 
  * @author Chris
  */
 public class ChartPanel  extends JPanel
@@ -30,6 +31,11 @@ public class ChartPanel  extends JPanel
     private double[] doubleTotal;
     private boolean doubleSwitch;
 
+    /**
+     * Create a new int-based chart
+     * @param _intpm The per-minute column
+     * @param _intTotal  the total column
+     */
     public ChartPanel(int[] _intpm, int[] _intTotal)
     {
         intpm = _intpm;
@@ -46,6 +52,11 @@ public class ChartPanel  extends JPanel
         doubleSwitch = false;
     }
     
+    /**
+     * Create a new double-based chart
+     * @param _doublepm the per-minute column
+     * @param _doubleTotal the total column
+     */
     public ChartPanel(double[] _doublepm, double[] _doubleTotal)
     {
         doublepm = _doublepm;
@@ -63,7 +74,11 @@ public class ChartPanel  extends JPanel
     }
         
     
-    @Override
+    /**
+     * Draws the chart
+     * 
+     * @param g Graphics
+     */
     protected void paintComponent(Graphics g) 
     {
         super.paintComponent(g);

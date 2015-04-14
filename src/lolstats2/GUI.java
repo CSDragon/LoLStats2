@@ -13,7 +13,6 @@ import javax.swing.JComboBox;
 /**
  * Handles interactions with the game's Graphical User Interface
  */
-@SuppressWarnings("serial") // Don't care to maintain serials
 public class GUI extends JPanel
 {
 	private BufferedImage topBar;
@@ -22,11 +21,12 @@ public class GUI extends JPanel
     private JTextField nameInputLine;
     private JButton lookupButton;
     private BufferedImage lookupButtonArt;
+    private BufferedImage lookupButtonPressedArt;
     private StatSelectPane ssp;
     private ArtPanel artp;
     private JComboBox<String> regionPicker;
     private String status = "Status";
-    
+  
     public static final int WIDTH = 640, HEIGHT = 480;
     
 
@@ -37,6 +37,16 @@ public class GUI extends JPanel
     {       
         setPreferredSize(new Dimension(640,480));
         setLayout(null);
+        
+        ImageIcon button = new ImageIcon("assets/SummonerLookupButton.png");
+        ImageIcon buttonPressed = new ImageIcon("assets/SummonerLookupButtonPressed.png");
+        
+        try 
+        {
+            topBar = ImageIO.read(new File("assets/TopBar.png"));
+            bottomBar = ImageIO.read(new File("assets/BottomBar.png"));
+        } 
+        catch (IOException e) {}
         
         nameInputLine = new JTextField();
         nameInputLine.setLocation(100, 30);
@@ -64,11 +74,12 @@ public class GUI extends JPanel
         add(nameInputLine);
         
         
-        lookupButton = new JButton();
-        lookupButton.setSize(100, 20);
+        lookupButton = new JButton(button);
+        lookupButton.setPressedIcon(buttonPressed);
         lookupButton.setOpaque(false);
-        lookupButton.setContentAreaFilled(false);
         lookupButton.setBorderPainted(false);
+        lookupButton.setContentAreaFilled(false);
+        lookupButton.setSize(101, 22);
         lookupButton.setLocation(440, 30);  
         lookupButton.addMouseListener(new MouseListener()
         {
@@ -120,14 +131,6 @@ public class GUI extends JPanel
         regionPicker.setVisible(true);
         add(regionPicker);
         
-
-        try 
-        {
-            topBar = ImageIO.read(new File("assets/TopBar.png"));
-            bottomBar = ImageIO.read(new File("assets/BottomBar.png"));
-            lookupButtonArt = ImageIO.read(new File("assets/SummonerLookupButton.png"));
-        } 
-        catch (IOException e) {}
         
         this.addFocusListener(new FocusListener()
         {
@@ -144,7 +147,11 @@ public class GUI extends JPanel
         
 	}
 
-
+    /**
+     * Creates the GraphsChartsPanel, and makes it create the graphs and charts
+     * 
+     * @param gpmem The GoldAnalyst for the summoner we looked up
+     */
     public void createGraph(GoldAnalyst gpmem) 
     {
         if(gcpPane != null)
@@ -157,8 +164,11 @@ public class GUI extends JPanel
         gcpPane.setVisible(true);
     }
     
-    
-    @Override
+    /**
+     * Draws the GUI object
+     * 
+     * @param g The Graphics
+     */
     protected void paintComponent(Graphics g) 
     {
         Graphics2D g2 = (Graphics2D)g;
@@ -172,7 +182,6 @@ public class GUI extends JPanel
         
         g2.drawImage(topBar, 0, 0, null);
         g2.drawImage(bottomBar,0,459,null);
-        g2.drawImage(lookupButtonArt, 440, 29, null);
          
 
         
@@ -185,7 +194,9 @@ public class GUI extends JPanel
 
     }
     
-    
+    /**
+     * Shows the GraphsChartsPanel and the StatSelectPane, while hiding the artPanel. Showing the "inner" content, and hiding the "outer" content. 
+     */
     public void showInner()
     {
         ssp.setVisible(true);
@@ -194,19 +205,30 @@ public class GUI extends JPanel
         
     }
     
+    /**
+     * Hides the GraphsChartsPanel and the StatSelectPane, while showing the artPanel. Showing the "outer" content, and hiding the "inner" content.
+     */
     public void hideInner()
     {
         ssp.setVisible(false);
-        gcpPane.setVisible(false);
+        if(gcpPane != null)
+            gcpPane.setVisible(false);
         artp.setVisible(true);
     }
-
     
+    /**
+     * Changes the status message
+     * 
+     * @param newStatus the new string we want the status message to say.
+     */
     public void changeStatus(String newStatus)
     {
         status = newStatus;
     }
     
+    /**
+     * Changes the status message back to "Status"
+     */
     public void resetStatus()
     {
         status = "Status";

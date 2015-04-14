@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.text.DecimalFormat;
 
+/**
+ * A class that takes a series of Matchdatas and turns it into graphable information.
+ * 
+ * @author Chris
+ */
 public class GoldAnalyst 
 {
     ArrayList<Matchdata> data;
@@ -22,6 +27,11 @@ public class GoldAnalyst
     private int nonSupGames;
     private int maxTime;
     
+    /**
+     * Creates a GoldAnalyst object, with basic restrictions
+     * 
+     * @param _data A list of Matchdatas the gold analyst will be looking through
+     */
     public GoldAnalyst(ArrayList<Matchdata> _data)
     {
         data = _data;
@@ -83,7 +93,14 @@ public class GoldAnalyst
         
     }
     
-    
+   /**
+     * Creates a GoldAnalyst object, with restrictions
+     * 
+     * @param _data A list of Matchdatas the gold analyst will be looking through
+     * @param victory a flag to check if we want wins only, losses only or both
+     * @param minCreeps a flag to dictate the minimum number of cpm for a game to count
+     * @param maxCreeps a flag to dictate the maximum number of cpm for a game to count.
+     */
     public GoldAnalyst(ArrayList<Matchdata> _data, int victory, int minCreeps, int maxCreeps)
     {
         data = _data;
@@ -160,7 +177,12 @@ public class GoldAnalyst
         
     }
     
-    
+    /**
+     * Gives a GoldAnalysit new restrictions
+     * @param victory a flag to check if we want wins only, losses only or both
+     * @param minCreeps a flag to dictate the minimum number of cpm for a game to count
+     * @param maxCreeps a flag to dictate the maximum number of cpm for a game to count.
+     */
     public void recast(int victory, int minCreeps, int maxCreeps)
     {
 
@@ -230,7 +252,9 @@ public class GoldAnalyst
         
     }
     
-    
+    /**
+     * prints out the GoldAnalyist, for testing purposes
+     */
     public void print()
     {
         System.out.println(Arrays.toString(getTotalGoldPerMin()));
@@ -241,6 +265,9 @@ public class GoldAnalyst
         System.out.println(String.format("%.2f", getCpm()));
     }
     
+    /**
+     * prints out CPMPerMin, for testing purposes
+     */
     public void printCreepsByMin()
     {
         System.out.println("awk" + maxTime);
@@ -250,6 +277,9 @@ public class GoldAnalyst
         }
     }
     
+    
+    
+    //getters
     
     /**
      * @return the countPerMin

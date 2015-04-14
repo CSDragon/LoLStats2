@@ -5,13 +5,13 @@ import com.google.gson.*;
 import java.io.*;
 import com.robrua.orianna.type.core.match.Match;
 
-
-
-
-
+/**
+ * A class that takes a match, and combs it for relevant information
+ * @author Chris
+ */
 public class Matchdata 
 {
-    private String playerName;
+    private String summonerName;
     private long playerID;
     private int participantID;
     private long matchID;
@@ -25,21 +25,31 @@ public class Matchdata
     private boolean victory;
 
     
-    
+    /**
+     * This method creates an empty matchdata.
+     * It should only be called when an error causes a real match to not work.
+     * Because it's empty, it will not affect the graph data.
+     */
     public Matchdata()
     {
     }
-    
-    
-    public Matchdata(long _matchID, String _playerName, long _playerID)
+
+    /**
+     * Creates a matchdata out of a match object.
+     * 
+     * @param match The match that's being analyzed.
+     * @param _matchID The ID of the match
+     * @param _summonerName The name of the summoner
+     * @param _playerID  The id of the summoner
+     */
+    public Matchdata(Match match, long _matchID, String _summonerName, long _playerID)
     {
         matchID = _matchID;
-        playerName = _playerName;
+        summonerName = _summonerName;
         playerID = _playerID;
 
-        Match match =  RiotAPI.getMatch(_matchID);      
         
-        participantID = getIdentityFromSummonerID(match, playerID);
+        participantID = getIdentityFromSummonerID(match);
         totalGoldEachMinute = goldEachMinute(match, participantID);
         minutes = totalGoldEachMinute.length;
         
@@ -68,6 +78,12 @@ public class Matchdata
         victory = match.getParticipants().get(participantID-1).getStats().getWinner();
     }
 
+    /**
+     * Saves a Matchdata as a JSON object, as a .txt file.
+     * 
+     * @param out The Matchdata we're saving
+     * @param region The region the summoner plays in
+     */
     public static void saveMD(Matchdata out, String region)
     {
         Gson outGS = new Gson();
@@ -90,6 +106,14 @@ public class Matchdata
         
     }
     
+    /**
+     * Loads a .txt file into a JSON object, into a Matchdata
+     * 
+     * @param matchID the match to be loaded
+     * @param UserName the name of the player
+     * @param region The region the summoner plays in
+     * @return the match
+     */
     public static Matchdata loadMD(long matchID, String UserName, String region)
     {
         FileReader fis;
@@ -126,8 +150,13 @@ public class Matchdata
         return in;
     }
     
-    
-    public static int getIdentityFromSummonerID(Match match, long playerID)
+    /**
+     * In a Match, combs through it and finds what "Identity" value the Match is calling the player.
+     * 
+     * @param match The Match being analyzed
+     * @return The Identity number
+     */
+    public int getIdentityFromSummonerID(Match match)
     {
         int playerNum=-1;
 
@@ -141,14 +170,19 @@ public class Matchdata
         return playerNum;
     }
     
-    
-    public static int getIdentityFromSummonerName(Match match, String playerName)
+    /**
+     * In a Match, combs through it and finds what "Identity" value the Match is calling the player.
+     * 
+     * @param match The Match being analyzed
+     * @return The Identity number
+     */
+    public int getIdentityFromSummonerName(Match match)
     {
         int playerNum=-1;
 
         for(int i = 0; i<10; i++)
         {
-            if(match.getParticipants().get(i).getSummonerName().equals(playerName))
+            if(match.getParticipants().get(i).getSummonerName().equals(summonerName))
                 playerNum=match.getParticipants().get(i).getParticipantID();
 
         }
@@ -156,7 +190,13 @@ public class Matchdata
         return playerNum;
     }
     
-
+    /**
+     * Calculates the amount of gold accrued each minute over the course of the match 
+     * @param match The match being calculated on
+     * @param participantId the Identity number
+     * @see getIdentityFromSummonerID
+     * @return an int array with each gold number
+     */
     public static int[] goldEachMinute(Match match, int participantId)
     {
         int length = match.getTimeline().getFrames().size();
@@ -172,8 +212,13 @@ public class Matchdata
         
     }
     
-    
-
+        /**
+     * Calculates the amount of creeps accrued each minute over the course of the match 
+     * @param match The match being calculated on
+     * @param participantId the Identity number
+     * @see getIdentityFromSummonerID
+     * @return an int array with each creep number
+     */
     public static int[] creepsEachMinute(Match match, int participantId)
     {
         int length = match.getTimeline().getFrames().size();
@@ -191,6 +236,7 @@ public class Matchdata
     
     
     
+    //getters
     public long getMatchID()
     {
         return matchID;
@@ -198,7 +244,7 @@ public class Matchdata
     
     public String getPlayerName()
     {
-        return playerName;
+        return summonerName;
     }
 
     public int[] getTotalGoldEachMinute()
@@ -210,7 +256,6 @@ public class Matchdata
     {
         return individualGEM;
     }
-    
     
     public int[] getTotalCreepsEachMinute()
     {
@@ -231,7 +276,6 @@ public class Matchdata
     {
         return cpm;
     }
-    
     
     public int getNumMinutes()
     {
