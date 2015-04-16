@@ -20,8 +20,6 @@ public class GUI extends JPanel
     private GraphsChartsPanel gcpPane;
     private JTextField nameInputLine;
     private JButton lookupButton;
-    private BufferedImage lookupButtonArt;
-    private BufferedImage lookupButtonPressedArt;
     private StatSelectPane ssp;
     private ArtPanel artp;
     private JComboBox<String> regionPicker;
@@ -48,72 +46,7 @@ public class GUI extends JPanel
         } 
         catch (IOException e) {}
         
-        nameInputLine = new JTextField();
-        nameInputLine.setLocation(100, 30);
-        nameInputLine.setSize(320, 20);  
-        nameInputLine.addKeyListener(new KeyListener()
-        {
-            public void actionPerformed(KeyEvent e) {}
-
-            public void keyReleased(KeyEvent e)
-            {
-                //If "enter"
-                if(e.getKeyCode() == 10)
-                {
-                    if(!nameInputLine.getText().equals(""))
-                        LolStats2.run(nameInputLine.getText(),(String)regionPicker.getSelectedItem());
-                    else
-                        hideInner();
-                }
-            }
-            
-            public void keyPressed(KeyEvent e) {}
-            public void keyTyped(KeyEvent e){}
-        });
-        
-        add(nameInputLine);
-        
-        
-        lookupButton = new JButton(button);
-        lookupButton.setPressedIcon(buttonPressed);
-        lookupButton.setOpaque(false);
-        lookupButton.setBorderPainted(false);
-        lookupButton.setContentAreaFilled(false);
-        lookupButton.setSize(101, 22);
-        lookupButton.setLocation(440, 30);  
-        lookupButton.addMouseListener(new MouseListener()
-        {
-            public void mousePressed(MouseEvent e) {}
-            public void mouseReleased(MouseEvent e) {}
-            
-            public void mouseClicked(MouseEvent e) 
-            {
-                if(!nameInputLine.getText().equals(""))
-                    LolStats2.run(nameInputLine.getText(),(String)regionPicker.getSelectedItem());
-                else
-                    hideInner();
-            }
-
-            public void mouseEntered(MouseEvent e) {}
-            public void mouseExited(MouseEvent e) {}
-        });
-        
-        add(lookupButton);
-        
-        
-        ssp = new StatSelectPane();
-        ssp.setSize(640,39);
-        ssp.setLocation(0, 58);
-        ssp.setVisible(false);
-        add(ssp);
-        
-        artp = new ArtPanel();
-        artp.setSize(640,400);
-        artp.setLocation(0, 59);
-        artp.setVisible(true);
-        add(artp);
-        
-        
+        //Set up the Region Picker dropdown box
         regionPicker = new JComboBox<>();
         
         regionPicker.addItem("NA"); //BR, EUNE, EUW, KR, LAS, LAN, NA, OCE, TR, RU, PBE, GLOBAL
@@ -127,17 +60,75 @@ public class GUI extends JPanel
         regionPicker.addItem("RU");
         
         regionPicker.setSize(55, 20);
-        regionPicker.setLocation(30, 30);
+        regionPicker.setLocation(57, 30);
         regionPicker.setVisible(true);
         add(regionPicker);
         
+        //Set up the name input line
+        nameInputLine = new JTextField();
+        nameInputLine.setLocation(130, 30);
+        nameInputLine.setSize(320, 20);  
+        nameInputLine.addKeyListener(new KeyListener()
+        {
+            public void actionPerformed(KeyEvent e) {}
+
+            public void keyReleased(KeyEvent e)
+            {
+                //If "enter"
+                if(e.getKeyCode() == 10)
+                {
+                    createGraph();
+                }
+            }
+            
+            public void keyPressed(KeyEvent e) {}
+            public void keyTyped(KeyEvent e){}
+        });
         
+        add(nameInputLine);
+        
+        //set up the lookup button
+        lookupButton = new JButton(button);
+        lookupButton.setPressedIcon(buttonPressed);
+        lookupButton.setOpaque(false);
+        lookupButton.setBorderPainted(false);
+        lookupButton.setContentAreaFilled(false);
+        lookupButton.setSize(101, 22);
+        lookupButton.setLocation(470, 30);  
+        lookupButton.addMouseListener(new MouseListener()
+        {
+            public void mousePressed(MouseEvent e) {}
+            public void mouseReleased(MouseEvent e) {}
+            
+            public void mouseClicked(MouseEvent e) 
+            {
+                createGraph();
+            }
+
+            public void mouseEntered(MouseEvent e) {}
+            public void mouseExited(MouseEvent e) {}
+        });
+        
+        add(lookupButton);
+
+        //set up the stat select pane
+        ssp = new StatSelectPane();
+        ssp.setSize(640,39);
+        ssp.setLocation(0, 58);
+        ssp.setVisible(false);
+        add(ssp);
+        
+        //set up the art panel
+        artp = new ArtPanel();
+        artp.setSize(640,400);
+        artp.setLocation(0, 59);
+        artp.setVisible(true);
+        add(artp);
+        
+        //make it so it focuses nameInputLine on startup
         this.addFocusListener(new FocusListener()
         {
-            public void focusLost(FocusEvent e)
-            {
-                
-            }
+            public void focusLost(FocusEvent e) {}
             
             public void focusGained(FocusEvent e)
             {
@@ -147,21 +138,40 @@ public class GUI extends JPanel
         
 	}
 
+
+    
     /**
-     * Creates the GraphsChartsPanel, and makes it create the graphs and charts
+     * Creates the GoldAnalyst, and the GraphsChartsPanel and makes it create the graphs and charts
      * 
-     * @param gpmem The GoldAnalyst for the summoner we looked up
      */
-    public void createGraph(GoldAnalyst gpmem) 
+    public void createGraph() 
     {
+        changeStatus("Checking for new Matches...");
+        
+        //If the inputline is empty, we don't want to show anything
+        if(nameInputLine.getText().equals(""))
+        {
+            hideInner();
+            return;
+        }
+        
+        //get the new GoldAnalyst.
+        GoldAnalyst gpmem = LolStats2.run(nameInputLine.getText(),(String)regionPicker.getSelectedItem());
+       
+        //If it already exists, we don't want it anymore
         if(gcpPane != null)
             this.remove(gcpPane);
+        
+        //set up the graphs charts panel
         gcpPane = new GraphsChartsPanel(gpmem);
         ssp.setTarget(gcpPane);
         gcpPane.setLocation(0,100);
         gcpPane.setSize(640,359);
         add(gcpPane);
-        gcpPane.setVisible(true);
+        
+        //show it!
+        showInner();
+        resetStatus();
     }
     
     /**
@@ -176,20 +186,16 @@ public class GUI extends JPanel
         //Fill background
 		g2.setColor(Color.decode("#03151C")); 
 		g2.fillRect(0, 0, 640, 480);
-        
        
-        //artp.reOrderPaint(g);
-        
+        //Draw art
         g2.drawImage(topBar, 0, 0, null);
         g2.drawImage(bottomBar,0,459,null);
-         
-
         
 		//draw Strings
 		g2.setColor(Color.decode("#FFFFFF"));
         g2.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 		g2.drawString(status, 5, 475);
-		g2.drawString("Ver 1.0.0.1", 565, 475);//Figure Out a way to align this later.
+		g2.drawString("Ver 1.0.0.0", 568, 475);//Figure Out a way to align this later.
 
 
     }
@@ -224,6 +230,7 @@ public class GUI extends JPanel
     public void changeStatus(String newStatus)
     {
         status = newStatus;
+        paintAll(getGraphics());
     }
     
     /**
@@ -232,6 +239,7 @@ public class GUI extends JPanel
     public void resetStatus()
     {
         status = "Status";
+        paintAll(getGraphics());
     }
     
 }

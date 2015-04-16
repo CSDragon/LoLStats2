@@ -1,6 +1,5 @@
 package lolstats2;
 
-import com.robrua.orianna.api.core.RiotAPI;
 import com.google.gson.*;
 import java.io.*;
 import com.robrua.orianna.type.core.match.Match;
@@ -23,6 +22,8 @@ public class Matchdata
     private int gpm;
     private double cpm;
     private boolean victory;
+    long champion;
+    long time;
 
     
     /**
@@ -75,7 +76,11 @@ public class Matchdata
         gpm = totalGoldEachMinute[totalGoldEachMinute.length-1]/totalGoldEachMinute.length;
         cpm = totalCreepsEachMinute[totalCreepsEachMinute.length-1]/totalCreepsEachMinute.length;
         
+        //get(participantID-1) might seem weird, but it's how getParticipants is stored.
         victory = match.getParticipants().get(participantID-1).getStats().getWinner();
+        champion = match.getParticipants().get(participantID-1).getChampionID();
+        time = System.currentTimeMillis();
+        
     }
 
     /**

@@ -8,6 +8,8 @@ import java.io.FileReader;
 import com.robrua.orianna.api.core.RiotAPI;
 import com.robrua.orianna.type.core.common.Region;
 import com.robrua.orianna.type.core.match.Match;
+import com.robrua.orianna.type.core.matchhistory.MatchSummary;
+import com.robrua.orianna.type.core.common.GameType;
 import java.util.List;
 
 
@@ -33,8 +35,8 @@ public class LolStats2
             BufferedReader br = new BufferedReader(new FileReader("key.txt"));
             String s = br.readLine();
             RiotAPI.setAPIKey(s);
-            RiotAPI.setRegion(com.robrua.orianna.type.core.common.Region.NA);
-            RiotAPI.setMirror(com.robrua.orianna.type.core.common.Region.NA);
+            RiotAPI.setRegion(Region.NA);
+            RiotAPI.setMirror(Region.NA);
         }
         catch(Exception e)
         {
@@ -51,14 +53,16 @@ public class LolStats2
      * 
      * @param summonerName The Summoner name we will be viewing
      * @param region The Region the summoner is from
+     * @return The GoldAnalyst we created
      */
-    public static void run(String summonerName, String region)
+    public static GoldAnalyst run(String summonerName, String region)
     {
         long playerID = 0;
+        
         //this has been commented out for offline testing
+        
         RiotAPI.setRegion(Region.valueOf(region));
         playerID = RiotAPI.getSummonerByName(summonerName).getID();
-
         
         
         createSavesFolder();  
@@ -70,12 +74,7 @@ public class LolStats2
         
         GoldAnalyst gpmem = new GoldAnalyst(loadRecordedMatches(summonerName, region),0,3,-1);
         
-        
-        
-        ui.getGui().createGraph(gpmem);
-        ui.getGui().showInner();
-        ui.getGui().repaint();
-  
+        return gpmem;
     }
     
     /**
@@ -136,7 +135,7 @@ public class LolStats2
     public static void getNewMatches(String summonerName, long playerID, String region)
     {
         
-        List<com.robrua.orianna.type.core.matchhistory.MatchSummary> mh = RiotAPI.getMatchHistory(playerID);
+        List<MatchSummary> mh = RiotAPI.getMatchHistory(playerID);
         
         
         //if player doesn't have a match history
@@ -163,12 +162,17 @@ public class LolStats2
         
         for (Long curMatchID : MHMatches) 
         {
+            ui.getGui().changeStatus("Downloading Match "+curMatchID+"... One moment please");
             Match match =  RiotAPI.getMatch(curMatchID);
-            if(match.getType() == com.robrua.orianna.type.core.common.GameType.MATCHED_GAME)
+            if(match.getType() == GameType.MATCHED_GAME)
                 Matchdata.saveMD(new Matchdata(match, curMatchID, summonerName, playerID), region);
+            try
+            {
+                Thread.sleep(250);
+            }
+            catch(Exception e) {}
         }
         
-        ui.getGui().resetStatus();
         
         
         

@@ -5,6 +5,10 @@
  */
 package lolstats2;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JComboBox;
@@ -47,12 +51,12 @@ public class OptionsPane extends JPanel
         
         creepScoreLow = new JTextField();
         creepScoreLow.setSize(25,20);
-        creepScoreLow.setLocation(30, 70);
+        creepScoreLow.setLocation(30, 80);
         add(creepScoreLow);
         
         creepScoreHigh = new JTextField();
         creepScoreHigh.setSize(25,20);
-        creepScoreHigh.setLocation(70, 70);
+        creepScoreHigh.setLocation(71, 80);
         add(creepScoreHigh);
         
         applyOptions = new JButton("Apply");
@@ -72,6 +76,10 @@ public class OptionsPane extends JPanel
             public void mouseExited(MouseEvent e) {}
         });
         add(applyOptions);
+        
+        creepScoreLow.setText("4");
+        creepScoreHigh.setText("-");
+        
         
         setOpaque(false);
         
@@ -113,4 +121,19 @@ public class OptionsPane extends JPanel
         
         
     }
+    
+    
+    /**
+     * Paints the component
+     */
+    protected void paintComponent(Graphics g) 
+    {
+        Graphics2D g2 = (Graphics2D)g;
+        g2.setColor(Color.decode("#CFCFCF"));
+        g2.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        g2.drawString("Victory and/or Defeat", 30, 23);
+        g2.drawString("CPM Limit (Support Game Filter)", 30, 73);
+        g2.drawString("—", 57, 92);
+    }
+    
 }
