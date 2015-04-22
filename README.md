@@ -3,7 +3,7 @@ Look up how a player's average GPM changes over the course of the game
 
 Requires external libraries: 
 	gson-2.3.1.jar, https://github.com/google/gson
-	ianna-2.2.4.jar, https://github.com/robrua/Orianna/releases
+	Orianna-2.2.4.jar, https://github.com/robrua/Orianna/releases
 	
 Requires you get an api key and put it in a file key.txt
 
