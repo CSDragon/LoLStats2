@@ -9,5 +9,4 @@ Requires you get an api key and put it in a file key.txt
 
 Some lines may be ccommened out for offline testing. If you see this line
 //this has been commented out for offline testing
-
 Uncomment the below line(s) to run online mode.

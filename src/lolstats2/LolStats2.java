@@ -11,6 +11,7 @@ import com.robrua.orianna.type.core.match.Match;
 import com.robrua.orianna.type.core.matchhistory.MatchSummary;
 import com.robrua.orianna.type.core.common.GameType;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 
 /**
@@ -40,7 +41,8 @@ public class LolStats2
         }
         catch(Exception e)
         {
-            RiotAPI.setAPIKey("YOUR_API_KEY_HERE");
+            JOptionPane.showMessageDialog(null, "Critical Error:\nYou need a Riot API Key in \"key.txt\"\nSee readme for details.");
+            System.exit(-1);
         }
         
 
