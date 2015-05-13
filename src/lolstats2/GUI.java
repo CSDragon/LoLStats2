@@ -148,10 +148,15 @@ public class GUI extends JPanel
     {
         changeStatus("Checking for new Matches...");
         
+        //we don't need to update the old gcpPane while making the new one. But only if it exists. Also, this can't but put down lower for raisons.
+        if(gcpPane != null)
+            gcpPane.stopTimer();
+        
         //If the inputline is empty, we don't want to show anything
         if(nameInputLine.getText().equals(""))
         {
             hideInner();
+            resetStatus();
             return;
         }
         
@@ -163,7 +168,7 @@ public class GUI extends JPanel
             this.remove(gcpPane);
         
         //set up the graphs charts panel
-        gcpPane = new GraphsChartsPanel(gpmem);
+        gcpPane = new GraphsChartsPanel(gpmem,nameInputLine.getText(), (String)regionPicker.getSelectedItem());
         ssp.setTarget(gcpPane);
         gcpPane.setLocation(0,100);
         gcpPane.setSize(640,359);

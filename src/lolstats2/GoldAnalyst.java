@@ -15,7 +15,7 @@ import java.text.DecimalFormat;
  */
 public class GoldAnalyst 
 {
-    ArrayList<Matchdata> data;
+    private ArrayList<Matchdata> data;
     private int[] countPerMin;
     private int[] totalGoldPerMin;
     private int[] GPMPerMin;
@@ -28,7 +28,7 @@ public class GoldAnalyst
     private int maxTime;
     
     /**
-     * Creates a GoldAnalyst object, with basic restrictions
+     * Creates a GoldAnalyst object, with basic restrictions (Avoid using whenever possible)
      * 
      * @param _data A list of Matchdatas the gold analyst will be looking through
      */

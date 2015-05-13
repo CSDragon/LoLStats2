@@ -12,6 +12,9 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.swing.Timer;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 /**
  * Contains the Graphs, Charts and options.
@@ -20,6 +23,8 @@ import javax.swing.JPanel;
  */
 public class GraphsChartsPanel extends JPanel
 {
+    private String name;
+    private String region;
     private OptionsPane optionsPane;
     private SwingLineGraph GPMGraph;
     private SwingLineGraph CPMGraph;
@@ -30,14 +35,20 @@ public class GraphsChartsPanel extends JPanel
     private BufferedImage minion;
     private int minipic = 1;
     private GoldAnalyst data;
+
+    private Timer updateTimer;
     
     /**
      * Creates the panel and sets up the contents
      * @param _data the GoldAnalyst we're turning into graphs
+     * @param n the name of the summoner
+     * @param r the region of the summoner
      */
-    public GraphsChartsPanel(GoldAnalyst _data)
+    public GraphsChartsPanel(GoldAnalyst _data, String n, String r)
     {
         data = _data;
+        name = n;
+        region = r;
         
         try 
         {
@@ -81,6 +92,16 @@ public class GraphsChartsPanel extends JPanel
         setOpaque(false);
         
         
+        
+        updateTimer = new Timer(5000, new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                update();
+            }
+        });
+        updateTimer.setInitialDelay(2000);
+        updateTimer.start();
     }
     
     /**
@@ -178,16 +199,68 @@ public class GraphsChartsPanel extends JPanel
         GPMChart.setSize(640,360);
         CPMChart.setLocation(0,0);
         CPMChart.setSize(640,360);
+
+        GPMGraph.setVisible(false);
+        CPMGraph.setVisible(false);
+        GPMChart.setVisible(false);
+        CPMChart.setVisible(false);
         
         add(GPMGraph);
         add(CPMGraph);
         add(GPMChart);
         add(CPMChart);
 
+    }
+    
+    /**
+     * fetches new matches for the currently displayed summoner
+     */
+    public void update()
+    {
+        data = LolStats2.run(name, region);
+        
+        remove(GPMGraph);
+        remove(CPMGraph);
+        remove(GPMChart);
+        remove(CPMChart);
+        
+        GPMGraph = new SwingLineGraph(data.getGPMPerMin(), 100);
+        CPMGraph = new SwingLineGraph(data.getCPMPerMin(),   1);
+        GPMChart = new ChartPanel(data.getGPMPerMin(), data.getTotalGoldPerMin());
+        CPMChart = new ChartPanel(data.getCPMPerMin(), data.getTotalCreepsPerMin());
+        
+        GPMGraph.setLocation(0,0);
+        GPMGraph.setSize(640,360);
+        CPMGraph.setLocation(0,0);
+        CPMGraph.setSize(640,360);
+        GPMChart.setLocation(0,0);
+        GPMChart.setSize(640,360);
+        CPMChart.setLocation(0,0);
+        CPMChart.setSize(640,360);
+
         GPMGraph.setVisible(false);
         CPMGraph.setVisible(false);
         GPMChart.setVisible(false);
         CPMChart.setVisible(false);
+        
+        add(GPMGraph);
+        add(CPMGraph);
+        add(GPMChart);
+        add(CPMChart);
+        
+        paneChanged(minipic);
+        
+        ((GUI)this.getParent()).resetStatus();
+        
+        
+    }
+    
+    /**
+     * Stops the update timer
+     */
+    public void stopTimer()
+    {
+        updateTimer.stop();
     }
     
 }
