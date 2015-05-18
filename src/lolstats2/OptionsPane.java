@@ -132,8 +132,8 @@ public class OptionsPane extends JPanel
             creepHigh = -1;
         }
         
-        timeLow = getTime(startTime.getJFormattedTextField().getText(),true);
-        timeHigh = getTime(endTime.getJFormattedTextField().getText(),false);
+        timeLow = getTime(startTime,true);
+        timeHigh = getTime(endTime,false);
         
         if(creepHigh > creepLow || (creepHigh == -1))
             parent.replaceCharts(wl, creepLow, creepHigh, timeLow, timeHigh);
@@ -157,7 +157,11 @@ public class OptionsPane extends JPanel
         g2.drawString("—", 118, 142);
     }
     
-    
+    /**
+     * Formats a JDatePickerImpl so it works in our system
+     * @param startOrEnd a bool determining if we're working with the start or end time picker.
+     * @return A fresh new JDatePickerImpl primed and ready to go
+     */
     JDatePickerImpl createDatePicker(boolean startOrEnd)
     {
         Properties p = new Properties();
@@ -201,11 +205,17 @@ public class OptionsPane extends JPanel
         return datePicker;
     }
     
-    
-    long getTime(String s, boolean startOrStop)
+    /**
+     * Takes the time string from a JDatePickerImpl and turns it into a time long
+     * @param target the JDatePickerImpl we're reading
+     * @param startOrStop a bool telling if this is for the start or end time.
+     * @return a long for the time in the picker
+     */
+    long getTime(JDatePickerImpl target, boolean startOrStop)
     {
         try
         {
+            String s = target.getJFormattedTextField().getText();
             int month;
             int day;
             int year;
@@ -244,4 +254,7 @@ public class OptionsPane extends JPanel
         }
     }
     
+    
+    
+  
 }
