@@ -100,7 +100,7 @@ public class GraphsChartsPanel extends JPanel
                 update();
             }
         });
-        updateTimer.setInitialDelay(2000);
+        updateTimer.setInitialDelay(21600000);
         updateTimer.start();
     }
     

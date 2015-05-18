@@ -155,6 +155,8 @@ public class OptionsPane extends JPanel
         g2.drawString("—", 57, 92);
         g2.drawString("Date Filter", 30, 125);
         g2.drawString("—", 118, 142);
+        
+        super.paintComponent(g);
     }
     
     /**

@@ -30,6 +30,9 @@ public class LolStats2
     public static void main(String[] args) 
     {
         
+        //Sneaky sneaky
+        //RiotAPI.setAPIKey(keyScrabmler.decode("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"));
+        
         //I can't publicly show my key, so you'll have to put your own key in key.txt
         try
         {
@@ -64,7 +67,7 @@ public class LolStats2
         RiotAPI.setRegion(Region.valueOf(region));
 
         //this has been commented out for offline testing
-        //playerID = RiotAPI.getSummonerByName(summonerName).getID();
+        playerID = RiotAPI.getSummonerByName(summonerName).getID();
         
         
         createSavesFolder();  
@@ -72,7 +75,7 @@ public class LolStats2
         createPersonalSaveFolder(summonerName, region);
         
         //this has been commented out for offline testing
-        //getNewMatches(summonerName, playerID, region);
+        getNewMatches(summonerName, playerID, region);
         
         GoldAnalyst gpmem = new GoldAnalyst(loadRecordedMatches(summonerName, region),0,3,-1);
         
