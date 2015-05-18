@@ -51,7 +51,7 @@ public class GUI extends JPanel
         
         regionPicker.addItem("NA"); //BR, EUNE, EUW, KR, LAS, LAN, NA, OCE, TR, RU, PBE, GLOBAL
         regionPicker.addItem("EUW");
-        regionPicker.addItem("ENE");
+        regionPicker.addItem("EUNE");
         regionPicker.addItem("KR");
         regionPicker.addItem("LAS");
         regionPicker.addItem("LAN");

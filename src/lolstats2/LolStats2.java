@@ -19,7 +19,7 @@ import javax.swing.JOptionPane;
  * 
  * @author Chris
  */
-public class LolStats2 
+public class LolStats2
 {
     private static SwingUI ui;
     
@@ -61,10 +61,10 @@ public class LolStats2
     {
         long playerID = 0;
         
-        //this has been commented out for offline testing
-        
         RiotAPI.setRegion(Region.valueOf(region));
-        playerID = RiotAPI.getSummonerByName(summonerName).getID();
+
+        //this has been commented out for offline testing
+        //playerID = RiotAPI.getSummonerByName(summonerName).getID();
         
         
         createSavesFolder();  
@@ -72,7 +72,7 @@ public class LolStats2
         createPersonalSaveFolder(summonerName, region);
         
         //this has been commented out for offline testing
-        getNewMatches(summonerName, playerID, region);
+        //getNewMatches(summonerName, playerID, region);
         
         GoldAnalyst gpmem = new GoldAnalyst(loadRecordedMatches(summonerName, region),0,3,-1);
         

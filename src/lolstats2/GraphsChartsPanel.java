@@ -219,6 +219,8 @@ public class GraphsChartsPanel extends JPanel
     {
         data = LolStats2.run(name, region);
         
+        this.setVisible(false);
+        
         remove(GPMGraph);
         remove(CPMGraph);
         remove(GPMChart);
@@ -250,6 +252,8 @@ public class GraphsChartsPanel extends JPanel
         
         paneChanged(minipic);
         
+        this.setVisible(true);
+        
         ((GUI)this.getParent()).resetStatus();
         
         
@@ -261,6 +265,15 @@ public class GraphsChartsPanel extends JPanel
     public void stopTimer()
     {
         updateTimer.stop();
+    }
+    
+    /**
+     * Gets region
+     * @return region
+     */
+    public String getRegion()
+    {
+        return region;
     }
     
 }

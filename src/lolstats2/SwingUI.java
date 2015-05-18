@@ -22,6 +22,8 @@ public class SwingUI
     private GUI guiPanel;
     private TrayIcon trayIcon;
     private SystemTray tray;
+    private int lastX;
+    private int lastY;
     
     /**
      * Creates the SwingUI object.
@@ -39,11 +41,20 @@ public class SwingUI
         // Display GUI
         appFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		appFrame.setResizable(false);
+        appFrame.setUndecorated(true);
+        
+        MotionPanel mp = new MotionPanel(appFrame);
+        mp.setLocation(0,0);
+        mp.setSize(640, 25);
+        mp.setPreferredSize(new Dimension(640,15));
+        appFrame.add(mp);
         
         guiPanel = new GUI();
         appFrame.add(guiPanel);
-        
+
         appFrame.pack();
+        appFrame.setLocationRelativeTo(null);
+
         appFrame.setVisible(true);
         guiPanel.requestFocus();
         
@@ -62,13 +73,14 @@ public class SwingUI
 
             Image trayImage=Toolkit.getDefaultToolkit().getImage("assets/traytemp.png");
             
-            trayIcon=new TrayIcon(trayImage, "SystemTray Demo", null);
+            trayIcon=new TrayIcon(trayImage, "LoL GPM Stats", null);
             trayIcon.addMouseListener(new MouseListener()
             {
                 public void mousePressed(MouseEvent e) {}
                 public void mouseReleased(MouseEvent e) {}
                 public void mouseClicked(MouseEvent e) 
                 {
+                    appFrame.setLocation(lastX, lastY);
                     appFrame.setVisible(true);
                     appFrame.setExtendedState(JFrame.NORMAL);
                 }
@@ -92,6 +104,8 @@ public class SwingUI
                 try
                 {
                     tray.add(trayIcon);
+                    lastX = appFrame.getX();
+                    lastY = appFrame.getY();
                     appFrame.setVisible(false);
                 }
                 catch (AWTException ex) {}
@@ -100,6 +114,7 @@ public class SwingUI
             if(e.getNewState()==NORMAL)
             {
                 tray.remove(trayIcon);
+                appFrame.setLocation(lastX, lastY);
                 appFrame.setVisible(true);
             }
         });

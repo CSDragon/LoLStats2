@@ -44,7 +44,7 @@ public class GoldAnalyst
         
         for(int i = 0; i<totalGames; i++)
         {
-            if(maxTime < data.get(i).getNumMinutes() && data.get(i).getCPM() >= 4)
+            if(maxTime < data.get(i).getNumMinutes() && data.get(i).getCPM() >= 3)
                 maxTime = data.get(i).getNumMinutes();
         }
         
