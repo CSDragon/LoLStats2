@@ -79,7 +79,7 @@ public class Matchdata
         //get(participantID-1) might seem weird, but it's how getParticipants is stored.
         victory = match.getParticipants().get(participantID-1).getStats().getWinner();
         champion = match.getParticipants().get(participantID-1).getChampionID();
-        time = System.currentTimeMillis();
+        time = match.getCreation().getTime();
         
     }
 
@@ -290,6 +290,11 @@ public class Matchdata
     public boolean getVictory()
     {
         return victory;
+    }
+    
+    public long getTime()
+    {
+        return time;
     }
     
 }

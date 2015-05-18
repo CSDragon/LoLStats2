@@ -93,7 +93,7 @@ public class GraphsChartsPanel extends JPanel
         
         
         
-        updateTimer = new Timer(5000, new ActionListener()
+        updateTimer = new Timer(21600000, new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
             {
@@ -177,9 +177,9 @@ public class GraphsChartsPanel extends JPanel
      * @param lowcpm low cpm bound
      * @param highcpm high cpm bound
      */
-    public void replaceCharts(int wl, int lowcpm, int highcpm)
+    public void replaceCharts(int wl, int lowcpm, int highcpm, long lowTime, long highTime)
     {
-        data.recast(wl, lowcpm, highcpm);
+        data.recast(wl, lowcpm, highcpm, lowTime, highTime);
         
         remove(GPMGraph);
         remove(CPMGraph);

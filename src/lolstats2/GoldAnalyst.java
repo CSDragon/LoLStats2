@@ -182,8 +182,10 @@ public class GoldAnalyst
      * @param victory a flag to check if we want wins only, losses only or both
      * @param minCreeps a flag to dictate the minimum number of cpm for a game to count
      * @param maxCreeps a flag to dictate the maximum number of cpm for a game to count.
+     * @param minTimeFilter a flag to dictate the minimum time the game must have been played at
+     * @param maxTimeFilter a flag to dictate the maximum time the game must have been played at
      */
-    public void recast(int victory, int minCreeps, int maxCreeps)
+    public void recast(int victory, int minCreeps, int maxCreeps, long minTimeFilter, long maxTimeFilter)
     {
 
         boolean countWins = true;
@@ -211,8 +213,10 @@ public class GoldAnalyst
             boolean winLossCheck = (countWins && countLosses)||(countWins && data.get(i).getVictory())||(countLosses && !data.get(i).getVictory());
             boolean creepLow = (minCreeps == -1 || data.get(i).getCPM() >= minCreeps);
             boolean creepHigh = (maxCreeps == -1 || data.get(i).getCPM() <= maxCreeps);
+            boolean timeLow = minTimeFilter < data.get(i).getTime();
+            boolean timeHigh = maxTimeFilter > data.get(i).getTime();
             
-            if(creepLow && creepHigh && winLossCheck)
+            if(creepLow && creepHigh && winLossCheck && timeLow && timeHigh)
             {
                 for(int j=1; j<data.get(i).getNumMinutes(); j++)
                 {

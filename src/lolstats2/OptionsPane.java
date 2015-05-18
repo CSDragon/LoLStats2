@@ -12,6 +12,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.Date;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -32,6 +33,8 @@ public class OptionsPane extends JPanel
     private JTextField creepScoreHigh;
     private JButton applyOptions;
     private GraphsChartsPanel parent;
+    private JDatePickerImpl startTime;
+    private JDatePickerImpl endTime;
        
     /**
      * Creates the options pane
@@ -64,8 +67,8 @@ public class OptionsPane extends JPanel
         add(creepScoreHigh);
         
     
-        JDatePickerImpl startTime = createDatePicker(true);
-        JDatePickerImpl endTime = createDatePicker(false);
+        startTime = createDatePicker(true);
+        endTime = createDatePicker(false);
         startTime.setLocation(30, 130);
         endTime.setLocation(135, 130);
         add(startTime);
@@ -104,33 +107,36 @@ public class OptionsPane extends JPanel
     public void replaceCharts()
     {
         int wl = -1;
-        int lowc;
-        int highc;
+        int creepLow;
+        int creepHigh;
+        long timeLow;
+        long timeHigh;
         
         wl = winLossPicker.getSelectedIndex();
         
-        
         try
         {
-            lowc = Integer.valueOf(creepScoreLow.getText());
+            creepLow = Integer.valueOf(creepScoreLow.getText());
         }
         catch(Exception E)
         {
-            lowc = -1;
+            creepLow = -1;
         }
         
         try
         {
-            highc = Integer.valueOf(creepScoreHigh.getText());
+            creepHigh = Integer.valueOf(creepScoreHigh.getText());
         }
         catch(Exception E)
         {
-            highc = -1;
+            creepHigh = -1;
         }
         
+        timeLow = getTime(startTime.getJFormattedTextField().getText(),true);
+        timeHigh = getTime(endTime.getJFormattedTextField().getText(),false);
         
-        if(highc > lowc || (highc == -1))
-            parent.replaceCharts(wl, lowc, highc);
+        if(creepHigh > creepLow || (creepHigh == -1))
+            parent.replaceCharts(wl, creepLow, creepHigh, timeLow, timeHigh);
         
         
     }
@@ -193,6 +199,49 @@ public class OptionsPane extends JPanel
         datePicker.setOpaque(false);
         
         return datePicker;
+    }
+    
+    
+    long getTime(String s, boolean startOrStop)
+    {
+        try
+        {
+            int month;
+            int day;
+            int year;
+            
+            if(parent.getRegion().equals("NA"))
+            {
+                day = Integer.valueOf(s.substring(3,5));
+                month = Integer.valueOf(s.substring(0,2));
+                year = Integer.valueOf(s.substring(6));
+            }
+            
+            else if(parent.getRegion().equals("KR"))
+            {
+                day = Integer.valueOf(s.substring(8));
+                month = Integer.valueOf(s.substring(5,7));
+                year = Integer.valueOf(s.substring(0,4));
+            }
+                        
+            else
+            {
+                day = Integer.valueOf(s.substring(0,2));
+                month = Integer.valueOf(s.substring(3,5));
+                year = Integer.valueOf(s.substring(6));
+            }
+            
+            return(Date.valueOf(year+"-"+month+"-"+day).getTime());
+            
+            
+        }
+        catch(Exception e)
+        {
+            if(startOrStop)
+                return -1;
+            else
+                return Long.MAX_VALUE;
+        }
     }
     
 }
