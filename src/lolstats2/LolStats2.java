@@ -31,7 +31,7 @@ public class LolStats2
     {
         
         //Sneaky sneaky
-        RiotAPI.setAPIKey(keyScrambler.decode("c15d8ij<-81h<-3497-27g<-29g;g>?@k>@p"));
+        RiotAPI.setAPIKey(keyScrambler.decode("168;j:9<-bbc9-1897-36:;-368ifg<h@?;B"));
         
         
         //I can't publicly show my key, so you'll have to put your own key in key.txt
