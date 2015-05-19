@@ -31,25 +31,29 @@ public class LolStats2
     {
         
         //Sneaky sneaky
-        //RiotAPI.setAPIKey(keyScrabmler.decode("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"));
+        RiotAPI.setAPIKey(keyScrambler.decode("c15d8ij<-81h<-3497-27g<-29g;g>?@k>@p"));
+        
         
         //I can't publicly show my key, so you'll have to put your own key in key.txt
+        /*
         try
         {
             BufferedReader br = new BufferedReader(new FileReader("key.txt"));
             String s = br.readLine();
             RiotAPI.setAPIKey(s);
-            RiotAPI.setRegion(Region.NA);
-            RiotAPI.setMirror(Region.NA);
         }
         catch(Exception e)
         {
             JOptionPane.showMessageDialog(null, "Critical Error:\nYou need a Riot API Key in \"key.txt\"\nSee readme for details.");
             System.exit(-1);
         }
+        */
         
+        RiotAPI.setRegion(Region.NA);
+        RiotAPI.setMirror(Region.NA);
 
         ui = new SwingUI();
+        
         
     }
     

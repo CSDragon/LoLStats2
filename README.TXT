@@ -3,7 +3,6 @@ How to use:
 	Just double click LoL GPM Analyzer.jar. You have to have Java installed, get that at https://java.com/en/download/
 	Once the program is running, just type in a summoner name and hit enter. 
 	Click the tabs to see different stats. Click options to filter out games. 
-	For now, you MUST HAVE a riot API key in a file "key.txt" just sign in to your League of Legends account here https://developer.riotgames.com/ and get one.
 
 	
 	
