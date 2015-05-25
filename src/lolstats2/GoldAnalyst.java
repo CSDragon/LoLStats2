@@ -7,6 +7,9 @@ package lolstats2;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.text.DecimalFormat;
+import com.robrua.orianna.type.core.common.Lane;
+import com.robrua.orianna.type.core.common.Role;
+import com.robrua.orianna.type.core.common.GameMap;
 
 /**
  * A class that takes a series of Matchdatas and turns it into graphable information.
@@ -24,8 +27,9 @@ public class GoldAnalyst
     private int gpm;
     private double cpm;
     private int totalGames;
-    private int nonSupGames;
+    private int analyzedGames;
     private int maxTime;
+    private double accuracyRating;
     
     /**
      * Creates a GoldAnalyst object, with basic restrictions (Avoid using whenever possible)
@@ -38,13 +42,17 @@ public class GoldAnalyst
         
         totalGames = data.size();
         
+        for(int i = 0; i<totalGames; i++)
+            accuracyRating += data.get(i).getRoleSanity();
+        accuracyRating/=totalGames;
+        
         DecimalFormat df = new DecimalFormat("#.00");
 
         maxTime=0;
         
         for(int i = 0; i<totalGames; i++)
         {
-            if(maxTime < data.get(i).getNumMinutes() && data.get(i).getCPM() >= 3)
+            if(maxTime < data.get(i).getNumMinutes())
                 maxTime = data.get(i).getNumMinutes();
         }
         
@@ -55,11 +63,11 @@ public class GoldAnalyst
         CPMPerMin = new double[maxTime];
         gpm = 0;
         cpm = 0;
-        nonSupGames=0;
+        analyzedGames=0;
         
         for(int i=0; i<totalGames; i++)
         {
-            if(data.get(i).getCPM() >= 3)
+            if(data.get(i).getRole() != Role.DUO_SUPPORT && data.get(i).getRole() != Role.DUO)
             {
                 for(int j=1; j<data.get(i).getNumMinutes(); j++)
                 {
@@ -72,7 +80,8 @@ public class GoldAnalyst
 
                 gpm += data.get(i).getGPM();
                 cpm += data.get(i).getCPM();
-                nonSupGames++;
+
+                analyzedGames++;
             }
         }
         
@@ -85,10 +94,10 @@ public class GoldAnalyst
         }
         
         
-        if(nonSupGames !=0)
+        if(analyzedGames !=0)
         {
-            gpm/=nonSupGames;
-            cpm/=nonSupGames;
+            gpm/=analyzedGames;
+            cpm/=analyzedGames;
         }
         
     }
@@ -98,10 +107,8 @@ public class GoldAnalyst
      * 
      * @param _data A list of Matchdatas the gold analyst will be looking through
      * @param victory a flag to check if we want wins only, losses only or both
-     * @param minCreeps a flag to dictate the minimum number of cpm for a game to count
-     * @param maxCreeps a flag to dictate the maximum number of cpm for a game to count.
      */
-    public GoldAnalyst(ArrayList<Matchdata> _data, int victory, int minCreeps, int maxCreeps)
+    public GoldAnalyst(ArrayList<Matchdata> _data, int victory)
     {
         data = _data;
         
@@ -114,13 +121,17 @@ public class GoldAnalyst
         
         totalGames = data.size();
         
+        for(int i = 0; i<totalGames; i++)
+            accuracyRating += data.get(i).getRoleSanity();
+        accuracyRating/=totalGames;
+        
         DecimalFormat df = new DecimalFormat("#.00");
 
         maxTime=0;
         
         for(int i = 0; i<totalGames; i++)
         {
-            if(maxTime < data.get(i).getNumMinutes() && data.get(i).getCPM() >= minCreeps)
+            if(maxTime < data.get(i).getNumMinutes())
                 maxTime = data.get(i).getNumMinutes();
         }
         
@@ -132,15 +143,13 @@ public class GoldAnalyst
         CPMPerMin = new double[maxTime];
         gpm = 0;
         cpm = 0;
-        nonSupGames=0;
+        analyzedGames=0;
         
         for(int i=0; i<totalGames; i++)
         {
             boolean winLossCheck = (countWins && countLosses)||(countWins && data.get(i).getVictory())||(countLosses && !data.get(i).getVictory());
-            boolean creepLow = (minCreeps == -1 || data.get(i).getCPM() >= minCreeps);
-            boolean creepHigh = (maxCreeps == -1 || data.get(i).getCPM() <= maxCreeps);
             
-            if(creepLow && creepHigh && winLossCheck)
+            if(winLossCheck && data.get(i).getRole() != Role.DUO_SUPPORT && data.get(i).getRole() != Role.DUO)
             {
                 for(int j=1; j<data.get(i).getNumMinutes(); j++)
                 {
@@ -153,7 +162,7 @@ public class GoldAnalyst
 
                 gpm += data.get(i).getGPM();
                 cpm += data.get(i).getCPM();
-                nonSupGames++;
+                analyzedGames++;
             }
         }
         
@@ -169,10 +178,10 @@ public class GoldAnalyst
         totalGoldPerMin[0] = 475;
         
         
-        if(nonSupGames !=0)
+        if(analyzedGames !=0)
         {
-            gpm/=nonSupGames;
-            cpm/=nonSupGames;
+            gpm/=analyzedGames;
+            cpm/=analyzedGames;
         }
         
     }
@@ -180,12 +189,15 @@ public class GoldAnalyst
     /**
      * Gives a GoldAnalysit new restrictions
      * @param victory a flag to check if we want wins only, losses only or both
-     * @param minCreeps a flag to dictate the minimum number of cpm for a game to count
-     * @param maxCreeps a flag to dictate the maximum number of cpm for a game to count.
      * @param minTimeFilter a flag to dictate the minimum time the game must have been played at
      * @param maxTimeFilter a flag to dictate the maximum time the game must have been played at
+     * @param topCheck a flag to dictate if Top lane games are allowed
+     * @param jungleCheck a flag to dictate if jungle games are allowed
+     * @param midCheck a flag to dictate if Mid lane games are allowed
+     * @param adcCheck a flag to dictate if ADC games are allowed
+     * @param supportCheck a flag to dictate if Support games are allowed
      */
-    public void recast(int victory, int minCreeps, int maxCreeps, long minTimeFilter, long maxTimeFilter)
+    public void recast(int victory, long minTimeFilter, long maxTimeFilter, boolean topCheck, boolean jungleCheck, boolean midCheck, boolean adcCheck, boolean supportCheck, int map)
     {
 
         boolean countWins = true;
@@ -194,6 +206,9 @@ public class GoldAnalyst
             countLosses = false;
         if(victory == 2)
             countWins = false;
+        
+        boolean countDuo = (adcCheck&&supportCheck);
+        boolean countAllRoles = (topCheck && jungleCheck && midCheck && adcCheck && supportCheck);
         
         
         DecimalFormat df = new DecimalFormat("#.00");
@@ -206,17 +221,38 @@ public class GoldAnalyst
         CPMPerMin = new double[maxTime];
         gpm = 0;
         cpm = 0;
-        nonSupGames=0;
+        analyzedGames=0;
         
         for(int i=0; i<totalGames; i++)
         {
             boolean winLossCheck = (countWins && countLosses)||(countWins && data.get(i).getVictory())||(countLosses && !data.get(i).getVictory());
-            boolean creepLow = (minCreeps == -1 || data.get(i).getCPM() >= minCreeps);
-            boolean creepHigh = (maxCreeps == -1 || data.get(i).getCPM() <= maxCreeps);
             boolean timeLow = minTimeFilter < data.get(i).getTime();
             boolean timeHigh = maxTimeFilter > data.get(i).getTime();
             
-            if(creepLow && creepHigh && winLossCheck && timeLow && timeHigh)
+            //this is gonna be a lot of comparisons but it's easier to bring it out here.
+            boolean topOK = ((data.get(i).getLane() == Lane.TOP) && topCheck);
+            boolean jungleOK = ((data.get(i).getLane() == Lane.JUNGLE) && jungleCheck);
+            boolean midOK = ((data.get(i).getLane() == Lane.MID) && midCheck);
+            boolean adcOK = ((data.get(i).getRole() == Role.DUO_CARRY) && adcCheck);
+            boolean supportOK = ((data.get(i).getRole() == Role.DUO_SUPPORT) && supportCheck);
+            //If both ADC and Support are ok, we can allow the nebulous "Duo" role.
+            boolean botOK = ((adcCheck && supportCheck) && (data.get(i).getRole() == Role.DUO));
+
+            //if ANY ONE OF THESE was true, then that means we found the role we were looking for.
+            boolean roleOK = (countAllRoles || topOK || jungleOK || midOK || adcOK || supportOK || botOK);
+            
+            
+            
+            
+            boolean srOK = (map == 0 && data.get(i).getMap() == GameMap.SUMMONERS_RIFT);
+            boolean aramOK = (map == 1 && data.get(i).getMap() == GameMap.HOWLING_ABYSS);
+            boolean ttOK = (map == 2 && data.get(i).getMap() == GameMap.TWISTED_TREELINE);
+            boolean domOK = (map == 3 && data.get(i).getMap() == GameMap.THE_CRYSTAL_SCAR);
+            
+            boolean mapOK = (map == 4 || srOK || aramOK || ttOK || domOK);
+            
+            
+            if(winLossCheck && timeLow && timeHigh && roleOK &&mapOK)
             {
                 for(int j=1; j<data.get(i).getNumMinutes(); j++)
                 {
@@ -229,7 +265,7 @@ public class GoldAnalyst
 
                 gpm += data.get(i).getGPM();
                 cpm += data.get(i).getCPM();
-                nonSupGames++;
+                analyzedGames++;
             }
         }
         
@@ -248,10 +284,10 @@ public class GoldAnalyst
         totalGoldPerMin[0] = 475;
         
         
-        if(nonSupGames !=0)
+        if(analyzedGames !=0)
         {
-            gpm/=nonSupGames;
-            cpm/=nonSupGames;
+            gpm/=analyzedGames;
+            cpm/=analyzedGames;
         }
         
     }
@@ -268,19 +304,6 @@ public class GoldAnalyst
         System.out.println(getGpm());
         System.out.println(String.format("%.2f", getCpm()));
     }
-    
-    /**
-     * prints out CPMPerMin, for testing purposes
-     */
-    public void printCreepsByMin()
-    {
-        System.out.println("awk" + maxTime);
-        for(int i = 0; i<maxTime; i++)
-        {
-            System.out.println(String.format("%2d",i) + ": " + String.format("%2.2f",getCPMPerMin()[i]) + " " + getTotalCreepsPerMin()[i]);
-        }
-    }
-    
     
     
     //getters
@@ -350,12 +373,16 @@ public class GoldAnalyst
     }
 
     /**
-     * @return the nonSupGames
+     * @return the analyzedGames
      */
     public int getNonSupGames() 
     {
-        return nonSupGames;
+        return analyzedGames;
     }
     
+    public double getAccuracyRating()
+    {
+        return accuracyRating;
+    }
     
 }

@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.io.File;
 import java.io.FileReader;
 import com.robrua.orianna.api.core.RiotAPI;
+import com.robrua.orianna.type.core.common.GameMode;
+import com.robrua.orianna.type.core.common.GameType;
+import com.robrua.orianna.type.core.common.QueueType;
 import com.robrua.orianna.type.core.common.Region;
 import com.robrua.orianna.type.core.match.Match;
 import com.robrua.orianna.type.core.matchhistory.MatchSummary;
-import com.robrua.orianna.type.core.common.GameType;
 import java.util.List;
 import javax.swing.JOptionPane;
 
@@ -30,12 +32,11 @@ public class LolStats2
     public static void main(String[] args) 
     {
         
-        //Sneaky sneaky
-        RiotAPI.setAPIKey(keyScrambler.decode("168;j:9<-bbc9-1897-36:;-368ifg<h@?;B"));
+        //This is for me only.
+        //RiotAPI.setAPIKey(keyScrambler.decode("e:d<<6<<-5b66-0c27-df8;-5bc5=:;l=@;<"));
         
         
         //I can't publicly show my key, so you'll have to put your own key in key.txt
-        /*
         try
         {
             BufferedReader br = new BufferedReader(new FileReader("key.txt"));
@@ -47,7 +48,7 @@ public class LolStats2
             JOptionPane.showMessageDialog(null, "Critical Error:\nYou need a Riot API Key in \"key.txt\"\nSee readme for details.");
             System.exit(-1);
         }
-        */
+        
         
         RiotAPI.setRegion(Region.NA);
         RiotAPI.setMirror(Region.NA);
@@ -71,7 +72,7 @@ public class LolStats2
         RiotAPI.setRegion(Region.valueOf(region));
 
         //this has been commented out for offline testing
-        playerID = RiotAPI.getSummonerByName(summonerName).getID();
+        //playerID = RiotAPI.getSummonerByName(summonerName).getID();
         
         
         createSavesFolder();  
@@ -79,11 +80,12 @@ public class LolStats2
         createPersonalSaveFolder(summonerName, region);
         
         //this has been commented out for offline testing
-        getNewMatches(summonerName, playerID, region);
+        //getNewMatches(summonerName, playerID, region);
         
-        GoldAnalyst gpmem = new GoldAnalyst(loadRecordedMatches(summonerName, region),0,3,-1);
+        GoldAnalyst gpmem = new GoldAnalyst(loadRecordedMatches(summonerName, region),0);
         
         return gpmem;
+        
     }
     
     /**
@@ -173,7 +175,8 @@ public class LolStats2
         {
             ui.getGui().changeStatus("Downloading Match "+curMatchID+"... One moment please");
             Match match =  RiotAPI.getMatch(curMatchID);
-            if(match.getType() == GameType.MATCHED_GAME)
+            boolean queueTypeOk = (match.getQueueType() == QueueType.ARAM_5x5 || match.getQueueType() == QueueType.GROUP_FINDER_5x5 || match.getQueueType() == QueueType.NORMAL_3x3 || match.getQueueType() == QueueType.NORMAL_5x5_BLIND || match.getQueueType() == QueueType.NORMAL_5x5_DRAFT || match.getQueueType() == QueueType.ODIN_5x5_BLIND || match.getQueueType() == QueueType.ODIN_5x5_DRAFT || match.getQueueType() == QueueType.RANKED_PREMADE_3x3 || match.getQueueType() == QueueType.RANKED_PREMADE_5x5 || match.getQueueType() == QueueType.RANKED_SOLO_5x5 || match.getQueueType() == QueueType.RANKED_TEAM_3x3 || match.getQueueType() == QueueType.RANKED_TEAM_5x5);
+            if(match.getType() == GameType.MATCHED_GAME && (match.getMode() == GameMode.ARAM || match.getMode() == GameMode.CLASSIC || match.getMode() == GameMode.ODIN) && queueTypeOk)
                 Matchdata.saveMD(new Matchdata(match, curMatchID, summonerName, playerID), region);
             try
             {

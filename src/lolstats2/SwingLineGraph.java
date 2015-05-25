@@ -69,7 +69,7 @@ public class SwingLineGraph extends JPanel
                maxVal = intScores[i];
        }
 
-       yMax = ((int)(maxVal * 1.2))/yScaleNum * yScaleNum;
+       yMax = ((int)Math.ceil(maxVal * 1.2))/yScaleNum * yScaleNum;
        yTickCount = yMax / yScaleNum;
 
        this.setOpaque(false);
@@ -105,7 +105,7 @@ public class SwingLineGraph extends JPanel
                 maxVal = doubleScores[i];
         }
 
-        yMax = ((int)(maxVal * 1.2))/yScaleNum * yScaleNum;
+        yMax = ((int)Math.ceil(maxVal * 1.2))/yScaleNum * yScaleNum;
         yTickCount = yMax / yScaleNum;
 
         this.setOpaque(false);

@@ -31,7 +31,7 @@ public class SwingUI
      */
     public SwingUI()
     {
-        appFrame = new JFrame("LoL Gold Data");
+        appFrame = new JFrame("LoL GPM Stats");
       
         
         //For clarity and reusability purposes, this was moved to its own method.

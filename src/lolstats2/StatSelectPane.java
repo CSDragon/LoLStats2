@@ -67,12 +67,12 @@ public class StatSelectPane  extends JPanel
                 else if(x > 215 && x < 318)
                 {
                     selectedLoc = 208;
-                    target.paneChanged(2);
+                    target.paneChanged(3);
                 }
                 else if(x > 322 && x < 424)
                 {
                     selectedLoc = 314;
-                    target.paneChanged(3);
+                    target.paneChanged(2);
                 }
                 else if(x > 428 && x < 531)
                 {
@@ -126,9 +126,9 @@ public class StatSelectPane  extends JPanel
         g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
 		g2.drawString("Options", 30, 22);
         g2.drawString("GPM Graph", 127, 22);
-        g2.drawString("CPM Graph", 235, 22);
-        g2.drawString("GPM Chart", 342, 22);
-        g2.drawString("CPM Chart", 450, 22);
+        g2.drawString("GPM Chart", 235, 22);
+        g2.drawString("Creep Graph", 337, 22);
+        g2.drawString("Creep Chart", 444, 22);
 		g2.drawString("Match Details", 550, 22);
         
     }

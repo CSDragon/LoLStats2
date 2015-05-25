@@ -13,12 +13,18 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.Date;
+import java.text.DecimalFormat;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import org.jdatepicker.impl.*;
 import java.util.Properties;
+import javax.swing.JCheckBox;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 
 /**
@@ -28,13 +34,21 @@ import java.util.Properties;
  */
 public class OptionsPane extends JPanel
 {
+    private DecimalFormat df;
+    
     private JComboBox<String> winLossPicker;
-    private JTextField creepScoreLow;
-    private JTextField creepScoreHigh;
     private JButton applyOptions;
     private GraphsChartsPanel parent;
     private JDatePickerImpl startTime;
     private JDatePickerImpl endTime;
+    private JCheckBox topBox;
+    private JCheckBox jungleBox;
+    private JCheckBox midBox;
+    private JCheckBox adcBox;
+    private JCheckBox supportBox;
+    private JComboBox<String> mapPicker;
+    
+    private BufferedImage bgImage;
        
     /**
      * Creates the options pane
@@ -43,40 +57,88 @@ public class OptionsPane extends JPanel
     public OptionsPane(GraphsChartsPanel _parent)
     {
         parent = _parent;
-        
+        df = new DecimalFormat("#.00");
         setLayout(null);
         
-        winLossPicker = new JComboBox<>();
-        winLossPicker.addItem("Both");
-        winLossPicker.addItem("Wins");
-        winLossPicker.addItem("Losses");
-        
-        winLossPicker.setSize(70, 20);
-        winLossPicker.setLocation(30, 30);
-        winLossPicker.setVisible(true);
-        add(winLossPicker);
-        
-        creepScoreLow = new JTextField();
-        creepScoreLow.setSize(25,20);
-        creepScoreLow.setLocation(30, 80);
-        add(creepScoreLow);
-        
-        creepScoreHigh = new JTextField();
-        creepScoreHigh.setSize(25,20);
-        creepScoreHigh.setLocation(71, 80);
-        add(creepScoreHigh);
-        
-    
+        //Date Pickers
         startTime = createDatePicker(true);
         endTime = createDatePicker(false);
-        startTime.setLocation(30, 130);
-        endTime.setLocation(135, 130);
+        startTime.setLocation(83, 76);
+        endTime.setLocation(188, 76);
         add(startTime);
         add(endTime);
         
+        
+        //Win-Loss Picker
+        winLossPicker = new JComboBox<>();
+        winLossPicker.addItem("Both");
+        winLossPicker.addItem("Victory");
+        winLossPicker.addItem("Defeat");
+        
+        winLossPicker.setSize(70, 20);
+        winLossPicker.setLocation(83, 158);
+        winLossPicker.setVisible(true);
+        add(winLossPicker);
+          
+        
+        //Map Picker
+        mapPicker = new JComboBox<>();
+        mapPicker.addItem("Summoner's Rift");
+        mapPicker.addItem("Howling Abyss");
+        mapPicker.addItem("Twisted Treeline");
+        mapPicker.addItem("Dominion");
+        mapPicker.addItem("All");
+        
+        mapPicker.setSize(130, 20);
+        mapPicker.setLocation(83, 241);
+        mapPicker.setVisible(true);
+        add(mapPicker);        
+        
+        //Role Checkboxes
+        topBox = new JCheckBox();
+        topBox.setLocation(467, 50);
+        topBox.setSize(50, 20);
+        topBox.setPreferredSize(new Dimension(240,100));
+        topBox.setOpaque(false);
+        topBox.setSelected(true);
+        add(topBox);
+        
+        jungleBox = new JCheckBox();
+        jungleBox.setLocation(467, 70);
+        jungleBox.setSize(50, 20);
+        jungleBox.setPreferredSize(new Dimension(240,100));
+        jungleBox.setOpaque(false);
+        jungleBox.setSelected(true);
+        add(jungleBox);
+        
+        midBox = new JCheckBox();
+        midBox.setLocation(467, 90);
+        midBox.setSize(50, 20);
+        midBox.setPreferredSize(new Dimension(240,100));
+        midBox.setOpaque(false);
+        midBox.setSelected(true);
+        add(midBox);
+        
+        adcBox = new JCheckBox();
+        adcBox.setLocation(467, 110);
+        adcBox.setSize(50, 20);
+        adcBox.setPreferredSize(new Dimension(240,100));
+        adcBox.setOpaque(false);
+        adcBox.setSelected(true);
+        add(adcBox);
+        
+        supportBox = new JCheckBox();
+        supportBox.setLocation(467, 130);
+        supportBox.setSize(20, 20);
+        supportBox.setPreferredSize(new Dimension(240,100));
+        supportBox.setOpaque(false);
+        add(supportBox);
+        
+        
+        //Apply Button
         applyOptions = new JButton("Apply");
         applyOptions.setSize(70,20);
-        applyOptions.setLocation(30,170);
+        applyOptions.setLocation(465, 247);
         applyOptions.addMouseListener(new MouseListener()
         {
             public void mousePressed(MouseEvent e) {}
@@ -92,8 +154,13 @@ public class OptionsPane extends JPanel
         });
         add(applyOptions);
         
-        creepScoreLow.setText("4");
-        creepScoreHigh.setText("-");
+        
+        try 
+        {
+            bgImage = ImageIO.read(new File("assets/OptionsBkg.png"));
+        } 
+        catch (IOException e) {}
+        
         
         setOpaque(false);
         
@@ -106,57 +173,10 @@ public class OptionsPane extends JPanel
      */
     public void replaceCharts()
     {
-        int wl = -1;
-        int creepLow;
-        int creepHigh;
-        long timeLow;
-        long timeHigh;
+        long timeLow = getTime(startTime,true);
+        long timeHigh = getTime(endTime,false);
         
-        wl = winLossPicker.getSelectedIndex();
-        
-        try
-        {
-            creepLow = Integer.valueOf(creepScoreLow.getText());
-        }
-        catch(Exception E)
-        {
-            creepLow = -1;
-        }
-        
-        try
-        {
-            creepHigh = Integer.valueOf(creepScoreHigh.getText());
-        }
-        catch(Exception E)
-        {
-            creepHigh = -1;
-        }
-        
-        timeLow = getTime(startTime,true);
-        timeHigh = getTime(endTime,false);
-        
-        if(creepHigh > creepLow || (creepHigh == -1))
-            parent.replaceCharts(wl, creepLow, creepHigh, timeLow, timeHigh);
-        
-        
-    }
-    
-    
-    /**
-     * Paints the component
-     */
-    protected void paintComponent(Graphics g) 
-    {
-        Graphics2D g2 = (Graphics2D)g;
-        g2.setColor(Color.decode("#CFCFCF"));
-        g2.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        g2.drawString("Victory and/or Defeat", 30, 23);
-        g2.drawString("CPM Limit (Support Game Filter)", 30, 73);
-        g2.drawString("—", 57, 92);
-        g2.drawString("Date Filter", 30, 125);
-        g2.drawString("—", 118, 142);
-        
-        super.paintComponent(g);
+        parent.replaceCharts(winLossPicker.getSelectedIndex(), timeLow, timeHigh, topBox.isSelected(), jungleBox.isSelected(), midBox.isSelected(), adcBox.isSelected(), supportBox.isSelected(), mapPicker.getSelectedIndex());
     }
     
     /**
@@ -189,6 +209,7 @@ public class OptionsPane extends JPanel
         dpfield.setPreferredSize(new Dimension(40,20));
         dpfield.setSize(70,20);
         dpfield.setLocation(0,0);
+        dpfield.setFont(new Font("Sans-Serif", Font.BOLD, 12));
         if(startOrEnd)
             dpfield.setText("Start Date");
         else
@@ -254,6 +275,34 @@ public class OptionsPane extends JPanel
             else
                 return Long.MAX_VALUE;
         }
+    }
+    
+    /**
+     * Paints the component
+     */
+    protected void paintComponent(Graphics g) 
+    {
+        Graphics2D g2 = (Graphics2D)g;
+    
+        g2.drawImage(bgImage, 31, 0, null);
+
+        g2.setColor(Color.decode("#CFCFCF"));
+        g2.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        g2.drawString("Victory/Defeat", 83, 152);
+        g2.drawString("Date", 83, 69);
+        g2.drawString("—", 172, 89);
+        g2.drawString("Map", 83, 235);
+        
+        g2.drawString("Top",490,64);
+        g2.drawString("Jungle",490,84);
+        g2.drawString("Mid",490,104);
+        g2.drawString("ADC",490,124);
+        g2.drawString("Support",490,144);
+        
+        g2.drawString("Role Accuracy", 462, 179);
+        g2.drawString(df.format(parent.getData().getAccuracyRating()*100)+"%", 482, 193);
+        
+        super.paintComponent(g);
     }
     
     

@@ -177,9 +177,9 @@ public class GraphsChartsPanel extends JPanel
      * @param lowcpm low cpm bound
      * @param highcpm high cpm bound
      */
-    public void replaceCharts(int wl, int lowcpm, int highcpm, long lowTime, long highTime)
+    public void replaceCharts(int wl,long lowTime, long highTime, boolean top, boolean jungle, boolean mid, boolean adc, boolean support, int map)
     {
-        data.recast(wl, lowcpm, highcpm, lowTime, highTime);
+        data.recast(wl, lowTime, highTime, top, jungle, mid, adc, support, map);
         
         remove(GPMGraph);
         remove(CPMGraph);
@@ -274,6 +274,11 @@ public class GraphsChartsPanel extends JPanel
     public String getRegion()
     {
         return region;
+    }
+    
+    public GoldAnalyst getData()
+    {
+        return data;
     }
     
 }

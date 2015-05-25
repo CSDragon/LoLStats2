@@ -3,6 +3,11 @@ package lolstats2;
 import com.google.gson.*;
 import java.io.*;
 import com.robrua.orianna.type.core.match.Match;
+import com.robrua.orianna.type.core.common.Lane;
+import com.robrua.orianna.type.core.common.Role;
+import com.robrua.orianna.type.core.common.GameMap;
+
+
 
 /**
  * A class that takes a match, and combs it for relevant information
@@ -22,9 +27,12 @@ public class Matchdata
     private int gpm;
     private double cpm;
     private boolean victory;
-    long champion;
-    long time;
-
+    private long champion;
+    private long time;
+    private Lane lane;
+    private Role role;
+    private double roleSanity;
+    private GameMap map;
     
     /**
      * This method creates an empty matchdata.
@@ -80,6 +88,13 @@ public class Matchdata
         victory = match.getParticipants().get(participantID-1).getStats().getWinner();
         champion = match.getParticipants().get(participantID-1).getChampionID();
         time = match.getCreation().getTime();
+        
+        lane = match.getParticipants().get(participantID-1).getTimeline().getLane();
+        role = match.getParticipants().get(participantID-1).getTimeline().getRole();
+        
+        roleSanity = sanityCheck(match);
+        
+        map = match.getMap();
         
     }
 
@@ -151,6 +166,12 @@ public class Matchdata
         Gson gson = new Gson();
         Matchdata in = gson.fromJson(json, Matchdata.class);
         
+        
+        //for testing purposes of older saves I have.
+        if(in.getMap() == null)
+            in.map = GameMap.SUMMONERS_RIFT;
+        if(in.role == null)
+            in.role = Role.DUO_CARRY;
         
         return in;
     }
@@ -240,6 +261,124 @@ public class Matchdata
     }
     
     
+    /**
+     * Checks if the match being checked has standard lanes/roles
+     * @param match
+     * @return returns a double based on how many role checks passed
+     */
+    public static double sanityCheck(Match match)
+    {
+        Lane lane;
+        Role role;
+        
+        int bot = 0;
+        int bottom = 0;
+        int jungle = 0;
+        int mid = 0;
+        int middle = 0;
+        int top = 0;
+        
+        int solo = 0;
+        int duo = 0;
+        int duo_carry = 0;
+        int duo_support = 0;
+        int none = 0;
+        
+
+        
+        for(int i = 0; i<10; i++)
+        {
+            lane = match.getParticipants().get(i).getTimeline().getLane();
+            role = match.getParticipants().get(i).getTimeline().getRole();
+            
+            switch(lane)
+            {
+                case BOT:
+                    bot++;
+                    break;
+                
+                case BOTTOM:
+                    bottom++;
+                    break;
+                    
+                case JUNGLE:
+                    jungle++;
+                    break;
+                
+                case MID:
+                    mid++;
+                    break;
+                    
+                case MIDDLE:
+                    middle++;
+                    break;
+                    
+                case TOP:
+                    top++;
+                    break;
+            }
+            
+            switch(role)
+            {
+                case SOLO:
+                    solo++;
+                    break;
+                    
+                case DUO:
+                    duo++;
+                    break;
+                    
+                case DUO_CARRY:
+                    duo_carry++;
+                    break;
+                    
+                case DUO_SUPPORT:
+                    duo_support++;
+                    break;
+                    
+                case NONE:
+                    none++;
+                    break;
+            }
+        }
+        
+        double total = 0;
+        
+        if(top == 2)
+            total++;
+        if(mid+middle == 2)
+            total++;
+        if(jungle == 2)
+            total++;
+        if(bot + bottom == 4)
+            total++;
+        
+        if(solo == 4)
+            total++;
+        if(duo + duo_carry + duo_support == 4);
+            total++;
+        if( duo_carry == 2);
+            total++;
+        if(duo_support == 2)
+            total++;
+        if(none == 2)
+            total++;
+        
+        //it would be total =/ 9 but I figured every time one is wrong it makes another wrong, but there's really only 1 error  
+        total = ((total/18.0)+.5);
+        
+        
+        //TestPrints
+        System.out.println("Sanity Check:\nTop:     "+ top + "\nJungle:  "+ jungle + "\nMid:     " + (mid+middle) + "\nBot:     " + (bot+bottom)+ "\n\nSolo:    "+solo + "\nDuo:     " + (duo+duo_carry+duo_support)
+        + "\n\"Bot\":   "+ duo+"\nADC:     "+ duo_carry+ "\nSupport: "+duo_support+ "\nNone:    " + none + "\nTotal Score: " +total);
+        
+        
+        
+        return total;
+        
+    }
+    
+    
     
     //getters
     public long getMatchID()
@@ -295,6 +434,26 @@ public class Matchdata
     public long getTime()
     {
         return time;
+    }
+    
+    public Lane getLane()
+    {
+        return lane;
+    }
+    
+    public Role getRole()
+    {
+        return role;
+    }
+    
+    public double getRoleSanity()
+    {
+        return roleSanity;
+    }
+    
+    public GameMap getMap()
+    {
+        return map;
     }
     
 }
