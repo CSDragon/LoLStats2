@@ -33,11 +33,11 @@ public class LolStats2
     {
         
         //This is for me only.
-        //RiotAPI.setAPIKey(keyScrambler.decode("e:d<<6<<-5b66-0c27-df8;-5bc5=:;l=@;<"));
+        RiotAPI.setAPIKey(keyScrambler.decode("e:d<<6<<-5b66-0c27-df8;-5bc5=:;l=@;<"));
         
         
         //I can't publicly show my key, so you'll have to put your own key in key.txt
-        try
+        /*try
         {
             BufferedReader br = new BufferedReader(new FileReader("key.txt"));
             String s = br.readLine();
@@ -47,7 +47,7 @@ public class LolStats2
         {
             JOptionPane.showMessageDialog(null, "Critical Error:\nYou need a Riot API Key in \"key.txt\"\nSee readme for details.");
             System.exit(-1);
-        }
+        }*/
         
         
         RiotAPI.setRegion(Region.NA);
