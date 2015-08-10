@@ -129,7 +129,6 @@ public class StatSelectPane  extends JPanel
         g2.drawString("GPM Chart", 235, 22);
         g2.drawString("Creep Graph", 337, 22);
         g2.drawString("Creep Chart", 444, 22);
-		g2.drawString("Match Details", 550, 22);
         
     }
    

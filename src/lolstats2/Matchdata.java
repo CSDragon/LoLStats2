@@ -369,8 +369,8 @@ public class Matchdata
         
         
         //TestPrints
-        System.out.println("Sanity Check:\nTop:     "+ top + "\nJungle:  "+ jungle + "\nMid:     " + (mid+middle) + "\nBot:     " + (bot+bottom)+ "\n\nSolo:    "+solo + "\nDuo:     " + (duo+duo_carry+duo_support)
-        + "\n\"Bot\":   "+ duo+"\nADC:     "+ duo_carry+ "\nSupport: "+duo_support+ "\nNone:    " + none + "\nTotal Score: " +total);
+        //System.out.println("Sanity Check:\nTop:     "+ top + "\nJungle:  "+ jungle + "\nMid:     " + (mid+middle) + "\nBot:     " + (bot+bottom)+ "\n\nSolo:    "+solo + "\nDuo:     " + (duo+duo_carry+duo_support)
+        //+ "\n\"Bot\":   "+ duo+"\nADC:     "+ duo_carry+ "\nSupport: "+duo_support+ "\nNone:    " + none + "\nTotal Score: " +total);
         
         
         
