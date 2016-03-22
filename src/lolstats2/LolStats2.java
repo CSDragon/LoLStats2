@@ -11,7 +11,7 @@ import com.robrua.orianna.type.core.common.GameType;
 import com.robrua.orianna.type.core.common.QueueType;
 import com.robrua.orianna.type.core.common.Region;
 import com.robrua.orianna.type.core.match.Match;
-import com.robrua.orianna.type.core.matchhistory.MatchSummary;
+import com.robrua.orianna.type.core.matchlist.MatchReference;
 import java.util.List;
 import javax.swing.JOptionPane;
 
@@ -146,8 +146,7 @@ public class LolStats2
     public static void getNewMatches(String summonerName, long playerID, String region)
     {
         
-        List<MatchSummary> mh = RiotAPI.getMatchHistory(playerID);
-        
+        List<MatchReference> mh = RiotAPI.getMatchList(playerID);
         
         //if player doesn't have a match history
         if(mh.isEmpty())
@@ -171,12 +170,14 @@ public class LolStats2
         
         ui.getGui().changeStatus("Downloading Matches...");
         
-        for (Long curMatchID : MHMatches) 
+        //Hard cap it at 60 games or it will try to download thousands of games.
+        for (int i = 0; i< MHMatches.size() && i < 60; i++) 
         {
+            Long curMatchID = MHMatches.get(i);
             ui.getGui().changeStatus("Downloading Match "+curMatchID+"... One moment please");
             Match match =  RiotAPI.getMatch(curMatchID);
-            boolean queueTypeOk = (match.getQueueType() == QueueType.ARAM_5x5 || match.getQueueType() == QueueType.GROUP_FINDER_5x5 || match.getQueueType() == QueueType.NORMAL_3x3 || match.getQueueType() == QueueType.NORMAL_5x5_BLIND || match.getQueueType() == QueueType.NORMAL_5x5_DRAFT || match.getQueueType() == QueueType.ODIN_5x5_BLIND || match.getQueueType() == QueueType.ODIN_5x5_DRAFT || match.getQueueType() == QueueType.RANKED_PREMADE_3x3 || match.getQueueType() == QueueType.RANKED_PREMADE_5x5 || match.getQueueType() == QueueType.RANKED_SOLO_5x5 || match.getQueueType() == QueueType.RANKED_TEAM_3x3 || match.getQueueType() == QueueType.RANKED_TEAM_5x5);
-            if(match.getType() == GameType.MATCHED_GAME && (match.getMode() == GameMode.ARAM || match.getMode() == GameMode.CLASSIC || match.getMode() == GameMode.ODIN) && queueTypeOk)
+            boolean queueTypeOk = (match.getQueueType() == QueueType.RANKED_SOLO_5x5 || match.getQueueType() == QueueType.RANKED_TEAM_5x5 || match.getQueueType() == QueueType.TEAM_BUILDER_DRAFT_RANKED_5x5 || match.getQueueType() == QueueType.TEAM_BUILDER_DRAFT_UNRANKED_5x5 || match.getQueueType() == QueueType.RANKED_TEAM_5x5 || match.getQueueType() == QueueType.NORMAL_5x5_BLIND || match.getQueueType() == QueueType.NORMAL_5x5_DRAFT);
+            if(match.getType() == GameType.MATCHED_GAME && match.getMode() == GameMode.CLASSIC && queueTypeOk)
                 Matchdata.saveMD(new Matchdata(match, curMatchID, summonerName, playerID), region);
             try
             {

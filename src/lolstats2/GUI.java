@@ -201,7 +201,7 @@ public class GUI extends JPanel
 		g2.setColor(Color.decode("#FFFFFF"));
         g2.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 		g2.drawString(status, 5, 475);
-		g2.drawString("Ver 1.0.0.1", 568, 475);//Figure Out a way to align this later.
+		g2.drawString("Ver 1.0.1.0", 568, 475);
 
 
     }
