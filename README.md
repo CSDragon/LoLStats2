@@ -1,3 +1,5 @@
+# Edit: As of June 2017, Riot has changed their API. My API interface, Orianna is taking longer than expected to update for Riot API V3, and until that update happens, this program will not work.
+
 # LoLStats2
 Look up how a player's average GPM changes over the course of the game
 
